@@ -52,7 +52,8 @@ types = {
 tokens = ['ID','INTEGER','ARITHMETIC_OPERATOR',
         'LOGICAL_OPERATOR', 'COMPARISON_OPERATOR',
         'ASSIGNMENT_OPERATOR', 'STRING_LITERAL',
-        'DELIMITER', 'FLOAT', 'COMMENT'] + list(keywords.values()) + list(types.values())
+        'DELIMITER', 'FLOAT', 'COMMENT', 
+        'BITWISE_OPERATOR'] + list(keywords.values()) + list(types.values())
 
 def t_COMMENT(t):
     r'(\/\/.*)|(\/\*.*(\n.*)*\*\/)'
@@ -60,8 +61,9 @@ def t_COMMENT(t):
 
 t_ARITHMETIC_OPERATOR = r'[\+\-\/\*\%]'
 t_LOGICAL_OPERATOR = r'(\&\&)|(\|\|)|(\!)'
+t_BITWISE_OPERATOR = r'(\&(?!\&|\^))|(\|(?!\|))|(\<\<)|(\>\>)|(\&\^)|(\^)'
 t_COMPARISON_OPERATOR = r'(\=\=)|(\!\=)|(\<\=)|(\>\=)|(\<)|(\>)'
-t_ASSIGNMENT_OPERATOR = r'(\:\=)|(\+\=)|(\-\=)|(\*\=)|(\/\=)|(\%\=)|(\=)'
+t_ASSIGNMENT_OPERATOR = r'(\:\=)|(\+\=)|(\-\=)|(\*\=)|(\/\=)|(\%\=)|(\=(?!\=))|(\+\+)|(\-\-)'
 t_STRING_LITERAL = r'"(.*)"'
 t_DELIMITER = r'(\:(?!=))|(\.\.\.)|(\()|(\))|(\[)|(\])|(\{)|(\})|(\;)|(\,)|(\.)'
 
@@ -90,8 +92,10 @@ def t_newline(t):
 t_ignore  = ' \t'
 
 def t_error(t):
-    print(f"Illegal character {t.value[0]}")
+    t.type = "Illegal character"
+    t.value = t.value[0]
     t.lexer.skip(1)
+    return t
 
 lexer = lex.lex()
 

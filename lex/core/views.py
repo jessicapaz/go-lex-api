@@ -12,13 +12,13 @@ class CodeApiView(APIView):
     def post(self, request, format=None):
         data = request.data.get("code")
         lex = get_data(data)
-        datas = []
+        response_data = []
         for token in lex:
-            response_data = {
+            token_data = {
                 'type': token.type,
-                'value': token.value,
+                'value': str(token.value),
                 'lineno': token.lineno,
-                'position': token.lexpos
+                'position': token.lexpos,
             }
-            datas.append(response_data)
-        return Response(datas, status=status.HTTP_201_CREATED)
+            response_data.append(token_data)
+        return Response(response_data, status=status.HTTP_201_CREATED)
