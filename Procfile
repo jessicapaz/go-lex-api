@@ -1,0 +1,1 @@
+web: cd lex; gunicorn lex.wsgi; cd ..

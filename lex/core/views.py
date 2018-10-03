@@ -7,6 +7,7 @@ from rest_framework.views import APIView
 
 from core.lexical import get_data
 
+
 class CodeApiView(APIView):
     
     def post(self, request, format=None):
