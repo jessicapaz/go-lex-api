@@ -1,4 +1,4 @@
-import core.ply.lex as lex
+import ply.lex as lex
 
 
 keywords = {
@@ -50,7 +50,7 @@ types = {
 }
 
 tokens = ['ID','INTEGER','ARITHMETIC_OPERATOR',
-        'LOGICAL_OPERATOR', 'COMPARISON_OPERATOR',
+        'OR', 'AND', 'NOT', 'COMPARISON_OPERATOR',
         'ASSIGNMENT_OPERATOR', 'STRING_LITERAL',
         'DELIMITER', 'FLOAT', 'COMMENT', 
         'BITWISE_OPERATOR', 'COLON', 'RPAREN', 
@@ -63,7 +63,9 @@ def t_COMMENT(t):
     pass
 
 t_ARITHMETIC_OPERATOR = r'[\+\-\/\*\%]'
-t_LOGICAL_OPERATOR = r'(\&\&)|(\|\|)|(\!)'
+t_OR = r'\|\|'
+t_AND = r'\&\&'
+t_NOT = r'\!'
 t_BITWISE_OPERATOR = r'(\&(?!\&|\^|\=))|(\|(?!\|))|(\<\<(?!=))|(\>\>(?!=))|(\&\^(?!\=))|(\^)'
 t_COMPARISON_OPERATOR = r'(\=\=)|(\!\=)|(\<\=)|(\>\=)|(\<)|(\>)'
 t_ASSIGNMENT_OPERATOR = r'(\:\=)|(\+\=)|(\-\=)|(\*\=)|(\/\=)|(\%\=)|(\=(?!\=))|(\+\+)|(\-\-)|(\&\=)|(\|\=)|(\^\=)|(\<\<\=)|(\>\>\=)|(\&\^\=)'
