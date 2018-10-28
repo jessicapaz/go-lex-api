@@ -1,10 +1,6 @@
 import ply.yacc as yacc
 from lexical import tokens
 
-""" TEM QUE QUEBRAR OS TOKENS, AMORZINHO (NO CASO, JÉSSICA)! """
-def p_assignment_expression(p):
-    '''assignment_expression : ID ASSIGNMENT_OPERATOR expression 
-    '''
 
 
 def p_binary_operators(p):
@@ -24,14 +20,14 @@ def p_binary_operators(p):
 def p_expression(p):
     '''expression : INTEGER
                   | FLOAT
+                  | STRING_LITERAL
                   | ID
                   | LPAREN expression RPAREN
     '''
-    # if p[1] == '(' and p[3] == ')':
-    #     p[0] = p[2]
-    # else:
-    #     p[0] = p[1]
-
+    if p[1] == '(' and p[3] == ')':
+        p[0] = p[2]
+    else:
+        p[0] = p[1]
 
 def p_logical_operators(p):
     '''expression : expression OR expression
@@ -46,6 +42,8 @@ def p_negation_operator(p):
     '''expression : NOT expression
     '''
     # p[0] = not p[2]
+
+
 
 
 def p_comparison_operators(p):
@@ -64,6 +62,17 @@ def p_comparison_operators(p):
     # elif p[2] == '!=':
     #     p[0] = p[1] != p[3]
     
+def p_arithmetical_assignments(p):
+    '''arithmetical_assignment : ID ARITHMETICAL_ASSIGNMENT expression 
+    '''
+def p_unary_assignment(p):
+    '''unary_assignment : ID UNARY_ASSIGNMENT
+    '''
+
+def p_assign_exp(p):
+    '''expression : arithmetical_assignment
+                  | unary_assignment
+    '''
 
 def p_error(p):
     print("Syntax error")

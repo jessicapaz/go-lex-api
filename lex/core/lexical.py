@@ -55,8 +55,8 @@ tokens = ['ID','INTEGER','ARITHMETIC_OPERATOR',
         'DELIMITER', 'FLOAT', 'COMMENT', 
         'BITWISE_OPERATOR', 'COLON', 'RPAREN', 
         'LPAREN', 'RBRACKET', 'LBRACKET', 'RBRACE', 
-        'LBRACE', 'COMMA', 'SEMICOLON', 
-        'ELLIPSIS'] + list(keywords.values()) + list(types.values())
+        'LBRACE', 'COMMA', 'SEMICOLON', 'ARITHMETICAL_ASSIGNMENT',
+        'ELLIPSIS', UNARY_ASSIGNMENT'] + list(keywords.values()) + list(types.values())
 
 def t_COMMENT(t):
     r'(\/\/.*)|(\/\*.*(\n.*)*\*\/)'
@@ -68,7 +68,11 @@ t_AND = r'\&\&'
 t_NOT = r'\!'
 t_BITWISE_OPERATOR = r'(\&(?!\&|\^|\=))|(\|(?!\|))|(\<\<(?!=))|(\>\>(?!=))|(\&\^(?!\=))|(\^)'
 t_COMPARISON_OPERATOR = r'(\=\=)|(\!\=)|(\<\=)|(\>\=)|(\<)|(\>)'
-t_ASSIGNMENT_OPERATOR = r'(\:\=)|(\+\=)|(\-\=)|(\*\=)|(\/\=)|(\%\=)|(\=(?!\=))|(\+\+)|(\-\-)|(\&\=)|(\|\=)|(\^\=)|(\<\<\=)|(\>\>\=)|(\&\^\=)'
+t_ARITHMETICAL_ASSIGNMENT = r'(\+\=)|(\-\=)|(\*\=)|(\/\=)|(\%\=)'
+t_BINARY_ASSIGNMENT = r'(\<\<\=)|(\>\>\=)|(\&\^\=)'
+t_LOGICAL_ASSIGNMENT = r'(\&\=)|(\|\=)|(\^\=)'
+t_NORMAL_ASSIGNMEN = r'(\:\=)|(\=(?!\=))'
+t_UNARY_ASSIGNMENT = r'(\+\+)|(\-\-)'
 t_STRING_LITERAL = r'\"(\\.|[^\\"\n])*\"|\`(\\.|[^\\"\n])*\`|`\\n|\\n`'
 t_DELIMITER = r'(\.)'
 t_ELLIPSIS = r'(\.\.\.)'
