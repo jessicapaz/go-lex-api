@@ -56,7 +56,8 @@ tokens = ['ID','INTEGER','ARITHMETIC_OPERATOR',
         'BITWISE_OPERATOR', 'COLON', 'RPAREN', 
         'LPAREN', 'RBRACKET', 'LBRACKET', 'RBRACE', 
         'LBRACE', 'COMMA', 'SEMICOLON', 'ARITHMETICAL_ASSIGNMENT',
-        'ELLIPSIS', UNARY_ASSIGNMENT'] + list(keywords.values()) + list(types.values())
+        'ELLIPSIS', 'UNARY_ASSIGNMENT', 'BINARY_ASSIGNMENT',
+        'LOGICAL_ASSIGNMENT', 'NORMAL_ASSIGNMENT'] + list(keywords.values()) + list(types.values())
 
 def t_COMMENT(t):
     r'(\/\/.*)|(\/\*.*(\n.*)*\*\/)'
@@ -71,7 +72,7 @@ t_COMPARISON_OPERATOR = r'(\=\=)|(\!\=)|(\<\=)|(\>\=)|(\<)|(\>)'
 t_ARITHMETICAL_ASSIGNMENT = r'(\+\=)|(\-\=)|(\*\=)|(\/\=)|(\%\=)'
 t_BINARY_ASSIGNMENT = r'(\<\<\=)|(\>\>\=)|(\&\^\=)'
 t_LOGICAL_ASSIGNMENT = r'(\&\=)|(\|\=)|(\^\=)'
-t_NORMAL_ASSIGNMEN = r'(\:\=)|(\=(?!\=))'
+t_NORMAL_ASSIGNMENT = r'(\:\=)|(\=(?!\=))'
 t_UNARY_ASSIGNMENT = r'(\+\+)|(\-\-)'
 t_STRING_LITERAL = r'\"(\\.|[^\\"\n])*\"|\`(\\.|[^\\"\n])*\`|`\\n|\\n`'
 t_DELIMITER = r'(\.)'
