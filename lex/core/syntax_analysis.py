@@ -29,6 +29,11 @@ def p_expression(p):
     else:
         p[0] = p[1]
 
+def p_expression_list(p):
+    '''expression_list : expression 
+                       | expression expression_list
+    '''
+
 def p_logical_operators(p):
     '''expression : expression OR expression
                   | expression AND expression
@@ -107,16 +112,15 @@ def p_type_lit(p):
     '''type_lit : array_type
                 | slice_type
                 | struct_type
+                | pointer_type
+                | function_type
+                | interface_type
+                | map_type
+                | channel_type
     '''
-                
-                # | pointer_type
-                # | function_type
-                # | interface_type
-                # | map_type
-                # | channel_type
 
 def p_exp_type_lit(p):
-    '''expression : type_lit
+    '''type : type_lit
     '''
 
 def p_array_type(p):
@@ -145,34 +149,139 @@ def p_identifier_list(p):
     '''
 
 def p_embedded_field(p):
-    '''embedded_field : '*' ID
+    '''embedded_field : ASTERISKS ID
     '''
 
 def p_string_lit(p):
     '''string_lit : STRING_LITERAL
     '''
 
+def p_pointer_type(p):
+    '''pointer_type : ASTERISKS type
+    '''
+
+def p_function_type(p):
+    '''function_type : FUNC signature
+    '''
+
+def p_signature(p):
+    '''signature : parameters
+                 | parameters result
+    '''
+
+def p_result(p):
+    '''result : parameters
+              | type
+              | LPAREN type RPAREN
+    '''
+
+def p_parameters(p):
+    '''parameters : LPAREN RPAREN
+                  | LPAREN parameter_list RPAREN
+    '''
+
+def p_parameter_list(p):
+    '''parameter_list : parameter_decl
+                      | parameter_decl COMMA parameter_list
+    '''
+
+def p_parameter_decl(p):
+    '''parameter_decl : identifier_list
+                      | identifier_list type
+                      | ELLIPSIS type
+                      | identifier_list ELLIPSIS type
+    '''
+
+def p_interface_type(p):
+    '''interface_type : INTERFACE LBRACE method_spec RBRACE
+    '''
+
+def p_method_spec(p):
+    '''method_spec : method_name signature 
+                    | interface_type_name
+    '''
+
+def p_method_name(p):
+    '''method_name : ID
+    '''
+
+def p_interface_type_name(p):
+    '''interface_type_name : ID
+    '''
+
+def p_map_type(p):
+    '''map_type : MAP LBRACKET key_type RBRACKET type
+    '''
+
+def p_key_type(p):
+    '''key_type : type
+    '''
+
+def p_channel_type(p):
+    '''channel_type : CHAN type
+                    | CHAN CHANNEL_OPERATOR type
+                    | CHANNEL_OPERATOR CHAN type
+    '''
+
+def p_declaration(p):
+    '''declaration : const_decl
+                   | type_decl
+                   | var_decl
+
+    '''
+def p_decl_exp(p):
+    '''expression : declaration
+    '''
+
+def p_const_decl(p):
+    '''const_decl : CONST const_spec
+                  | CONST LPAREN const_spec RPAREN
+    '''
+def p_const_spec(p):
+    '''const_spec : identifier_list NORMAL_ASSIGNMENT expression_list
+                  | identifier_list type NORMAL_ASSIGNMENT expression_list
+    '''
+
+def p_type_decl(p):
+    '''type_decl : TYPE type_spec
+                 | TYPE LPAREN type_spec RPAREN
+    '''
+
+def p_type_spec(p):
+    '''type_spec : alias_decl 
+                 | type_def
+    '''
+
+def p_alias_decl(p):
+    '''alias_decl : ID NORMAL_ASSIGNMENT type
+    '''
+
+def p_type_def(p):
+    '''type_def : ID type
+    '''
+
+def p_var_decl(p):
+    '''var_decl : VAR var_spec
+                | VAR LPAREN var_spec RPAREN
+    '''
+
+def p_var_spec(p):
+    '''var_spec : identifier_list type 
+                | identifier_list type NORMAL_ASSIGNMENT expression_list
+                | identifier_list NORMAL_ASSIGNMENT expression_list 
+    '''
 
 
-# def p_declaration(p):
-#     '''declaration : const_decl
-#                     | type_decl
-#                     | var_decl
+
+# def p_block(p):
+#     '''block : LBRACE statement_list RBRACE
 #     '''
 
-# def p_const_decl(p):
-#     '''const_decl : CONST const_spec
-#                   | CONST LPAREN const_spec RPAREN
+# def p_statement_list(p):
+#     '''statement_list : statement
+#                       | statement statement_list
 #     '''
 
-# def p_const_spec(p):
-#     '''const_spec : identifier_list ASSIGNMENT_OPERATOR expression_list
-#                   | identifier_list type ASSIGNMENT_OPERATOR expression_list
-#     '''
-
-# def p_const_exp(p):
-#     '''expression : const_decl
-#     '''
 
 # def p_type_decl(p):
 #     '''type_decl : TYPE type_spec 
@@ -186,10 +295,6 @@ def p_string_lit(p):
 
 # def p_alias_decl(p):
 #     '''alias_decl : ID ASSIGMENT_OPERATOR 
-#     '''
-
-# def p_block(p):
-#     '''block : statement
 #     '''
 
 # def p_statement(p):

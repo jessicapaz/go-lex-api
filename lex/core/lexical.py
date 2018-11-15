@@ -57,18 +57,21 @@ tokens = ['ID','INTEGER','ARITHMETIC_OPERATOR',
         'LPAREN', 'RBRACKET', 'LBRACKET', 'RBRACE', 
         'LBRACE', 'COMMA', 'SEMICOLON', 'ARITHMETICAL_ASSIGNMENT',
         'ELLIPSIS', 'UNARY_ASSIGNMENT', 'BINARY_ASSIGNMENT',
-        'LOGICAL_ASSIGNMENT', 'NORMAL_ASSIGNMENT'] + list(keywords.values()) + list(types.values())
+        'LOGICAL_ASSIGNMENT', 'NORMAL_ASSIGNMENT', 'ASTERISKS',
+        'CHANNEL_OPERATOR'] + list(keywords.values()) + list(types.values())
 
 def t_COMMENT(t):
     r'(\/\/.*)|(\/\*.*(\n.*)*\*\/)'
     pass
 
-t_ARITHMETIC_OPERATOR = r'[\+\-\/\*\%]'
+t_ARITHMETIC_OPERATOR = r'[\+\-\/\%]'
+t_ASTERISKS = r'\*'
 t_OR = r'\|\|'
 t_AND = r'\&\&'
 t_NOT = r'\!'
+t_CHANNEL_OPERATOR = r'\<\-'
 t_BITWISE_OPERATOR = r'(\&(?!\&|\^|\=))|(\|(?!\|))|(\<\<(?!=))|(\>\>(?!=))|(\&\^(?!\=))|(\^)'
-t_COMPARISON_OPERATOR = r'(\=\=)|(\!\=)|(\<\=)|(\>\=)|(\<)|(\>)'
+t_COMPARISON_OPERATOR = r'(\=\=)|(\!\=)|(\<\=)|(\>\=)|(\<(?!-))|(\>)'
 t_ARITHMETICAL_ASSIGNMENT = r'(\+\=)|(\-\=)|(\*\=)|(\/\=)|(\%\=)'
 t_BINARY_ASSIGNMENT = r'(\<\<\=)|(\>\>\=)|(\&\^\=)'
 t_LOGICAL_ASSIGNMENT = r'(\&\=)|(\|\=)|(\^\=)'
