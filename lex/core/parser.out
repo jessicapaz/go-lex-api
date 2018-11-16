@@ -13,7 +13,6 @@ Unused terminals:
     DEFAULT
     DEFER
     DELIMITER
-    ELSE
     FALLTHROUGH
     GO
     GOTO
@@ -137,15 +136,16 @@ Rule 109   statement -> return_statement
 Rule 110   expression -> statement
 Rule 111   block -> LBRACE expression_list RBRACE
 Rule 112   if_statement -> IF expression block
-Rule 113   for_statement -> FOR expression block
-Rule 114   for_statement -> FOR for_clause block
-Rule 115   for_statement -> FOR range_clause block
-Rule 116   for_clause -> assignment_statement SEMICOLON expression SEMICOLON expression
-Rule 117   assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list
-Rule 118   range_clause -> expression_list NORMAL_ASSIGNMENT RANGE expression
-Rule 119   range_clause -> identifier_list NORMAL_ASSIGNMENT RANGE expression
-Rule 120   return_statement -> RETURN expression_list
-Rule 121   program -> expression_list
+Rule 113   if_statement -> IF expression block ELSE block
+Rule 114   for_statement -> FOR expression block
+Rule 115   for_statement -> FOR for_clause block
+Rule 116   for_statement -> FOR range_clause block
+Rule 117   for_clause -> assignment_statement SEMICOLON expression SEMICOLON expression
+Rule 118   assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list
+Rule 119   range_clause -> expression_list NORMAL_ASSIGNMENT RANGE expression
+Rule 120   range_clause -> identifier_list NORMAL_ASSIGNMENT RANGE expression
+Rule 121   return_statement -> RETURN expression_list
+Rule 122   program -> expression_list
 
 Terminals, with rules where they appear
 
@@ -170,15 +170,15 @@ DEFAULT              :
 DEFER                : 
 DELIMITER            : 
 ELLIPSIS             : 69 70
-ELSE                 : 
+ELSE                 : 113
 FALLTHROUGH          : 
 FLOAT                : 2
-FOR                  : 113 114 115
+FOR                  : 114 115 116
 FUNC                 : 57 102 103
 GO                   : 
 GOTO                 : 
 ID                   : 4 13 14 52 53 54 74 75 95 96 102 103
-IF                   : 112
+IF                   : 112 113
 IMPORT               : 104 105
 INTEGER              : 1
 INTERFACE            : 71
@@ -187,17 +187,17 @@ LBRACKET             : 44 45 76
 LOGICAL_ASSIGNMENT   : 
 LPAREN               : 5 62 63 64 88 92 98 105
 MAP                  : 76
-NORMAL_ASSIGNMENT    : 89 90 95 100 101 117 118 119
+NORMAL_ASSIGNMENT    : 89 90 95 100 101 118 119 120
 NOT                  : 11
 OR                   : 9
 PACKAGE              : 
-RANGE                : 118 119
+RANGE                : 119 120
 RBRACE               : 46 47 71 111
 RBRACKET             : 44 45 76
-RETURN               : 120
+RETURN               : 121
 RPAREN               : 5 62 63 64 88 92 98 105
 SELECT               : 
-SEMICOLON            : 116 116
+SEMICOLON            : 117 117
 STRING_LITERAL       : 3 55
 STRUCT               : 46 47
 SWITCH               : 
@@ -228,21 +228,21 @@ Nonterminals, with rules where they appear
 alias_decl           : 93
 arithmetical_assignment : 15
 array_type           : 35
-assignment_statement : 108 116
-block                : 103 112 113 114 115
+assignment_statement : 108 117
+block                : 103 112 113 113 114 115 116
 channel_type         : 42
 const_decl           : 81
 const_spec           : 87 88
 declaration          : 86
 embedded_field       : 50 51
-expression           : 5 6 6 7 8 9 9 10 10 11 12 12 13 44 112 113 116 116 118 119
-expression_list      : 8 89 90 100 101 111 117 117 118 120 121
+expression           : 5 6 6 7 8 9 9 10 10 11 12 12 13 44 112 113 114 117 117 119 120
+expression_list      : 8 89 90 100 101 111 118 118 119 121 122
 field_decl           : 47
-for_clause           : 114
+for_clause           : 115
 for_statement        : 107
 func_decl            : 84
 function_type        : 39
-identifier_list      : 48 49 53 67 68 70 89 90 99 100 101 119
+identifier_list      : 48 49 53 67 68 70 89 90 99 100 101 120
 if_statement         : 106
 import_decl          : 85
 interface_type       : 40
@@ -256,7 +256,7 @@ parameter_list       : 64 66
 parameters           : 58 59 60
 pointer_type         : 38
 program              : 0
-range_clause         : 115
+range_clause         : 116
 result               : 59
 return_statement     : 109
 signature            : 57 72 102 103
@@ -278,7 +278,7 @@ Parsing method: LALR
 state 0
 
     (0) S' -> . program
-    (121) program -> . expression_list
+    (122) program -> . expression_list
     (7) expression_list -> . expression
     (8) expression_list -> . expression expression_list
     (1) expression -> . INTEGER
@@ -344,11 +344,12 @@ state 0
     (104) import_decl -> . IMPORT string_lit
     (105) import_decl -> . IMPORT LPAREN string_lit RPAREN
     (112) if_statement -> . IF expression block
-    (113) for_statement -> . FOR expression block
-    (114) for_statement -> . FOR for_clause block
-    (115) for_statement -> . FOR range_clause block
-    (117) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
-    (120) return_statement -> . RETURN expression_list
+    (113) if_statement -> . IF expression block ELSE block
+    (114) for_statement -> . FOR expression block
+    (115) for_statement -> . FOR for_clause block
+    (116) for_statement -> . FOR range_clause block
+    (118) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
+    (121) return_statement -> . RETURN expression_list
     (44) array_type -> . LBRACKET expression RBRACKET type
     (45) slice_type -> . LBRACKET RBRACKET type
     (46) struct_type -> . STRUCT LBRACE RBRACE
@@ -435,10 +436,10 @@ state 1
 
 state 2
 
-    (121) program -> expression_list .
-    (117) assignment_statement -> expression_list . NORMAL_ASSIGNMENT expression_list
+    (122) program -> expression_list .
+    (118) assignment_statement -> expression_list . NORMAL_ASSIGNMENT expression_list
 
-    $end            reduce using rule 121 (program -> expression_list .)
+    $end            reduce using rule 122 (program -> expression_list .)
     NORMAL_ASSIGNMENT shift and go to state 65
 
 
@@ -515,11 +516,12 @@ state 3
     (104) import_decl -> . IMPORT string_lit
     (105) import_decl -> . IMPORT LPAREN string_lit RPAREN
     (112) if_statement -> . IF expression block
-    (113) for_statement -> . FOR expression block
-    (114) for_statement -> . FOR for_clause block
-    (115) for_statement -> . FOR range_clause block
-    (117) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
-    (120) return_statement -> . RETURN expression_list
+    (113) if_statement -> . IF expression block ELSE block
+    (114) for_statement -> . FOR expression block
+    (115) for_statement -> . FOR for_clause block
+    (116) for_statement -> . FOR range_clause block
+    (118) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
+    (121) return_statement -> . RETURN expression_list
     (44) array_type -> . LBRACKET expression RBRACKET type
     (45) slice_type -> . LBRACKET RBRACKET type
     (46) struct_type -> . STRUCT LBRACE RBRACE
@@ -983,11 +985,12 @@ state 8
     (104) import_decl -> . IMPORT string_lit
     (105) import_decl -> . IMPORT LPAREN string_lit RPAREN
     (112) if_statement -> . IF expression block
-    (113) for_statement -> . FOR expression block
-    (114) for_statement -> . FOR for_clause block
-    (115) for_statement -> . FOR range_clause block
-    (117) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
-    (120) return_statement -> . RETURN expression_list
+    (113) if_statement -> . IF expression block ELSE block
+    (114) for_statement -> . FOR expression block
+    (115) for_statement -> . FOR for_clause block
+    (116) for_statement -> . FOR range_clause block
+    (118) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
+    (121) return_statement -> . RETURN expression_list
     (44) array_type -> . LBRACKET expression RBRACKET type
     (45) slice_type -> . LBRACKET RBRACKET type
     (46) struct_type -> . STRUCT LBRACE RBRACE
@@ -1133,11 +1136,12 @@ state 9
     (104) import_decl -> . IMPORT string_lit
     (105) import_decl -> . IMPORT LPAREN string_lit RPAREN
     (112) if_statement -> . IF expression block
-    (113) for_statement -> . FOR expression block
-    (114) for_statement -> . FOR for_clause block
-    (115) for_statement -> . FOR range_clause block
-    (117) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
-    (120) return_statement -> . RETURN expression_list
+    (113) if_statement -> . IF expression block ELSE block
+    (114) for_statement -> . FOR expression block
+    (115) for_statement -> . FOR for_clause block
+    (116) for_statement -> . FOR range_clause block
+    (118) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
+    (121) return_statement -> . RETURN expression_list
     (44) array_type -> . LBRACKET expression RBRACKET type
     (45) slice_type -> . LBRACKET RBRACKET type
     (46) struct_type -> . STRUCT LBRACE RBRACE
@@ -3520,6 +3524,7 @@ state 54
 state 55
 
     (112) if_statement -> IF . expression block
+    (113) if_statement -> IF . expression block ELSE block
     (1) expression -> . INTEGER
     (2) expression -> . FLOAT
     (3) expression -> . STRING_LITERAL
@@ -3583,11 +3588,12 @@ state 55
     (104) import_decl -> . IMPORT string_lit
     (105) import_decl -> . IMPORT LPAREN string_lit RPAREN
     (112) if_statement -> . IF expression block
-    (113) for_statement -> . FOR expression block
-    (114) for_statement -> . FOR for_clause block
-    (115) for_statement -> . FOR range_clause block
-    (117) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
-    (120) return_statement -> . RETURN expression_list
+    (113) if_statement -> . IF expression block ELSE block
+    (114) for_statement -> . FOR expression block
+    (115) for_statement -> . FOR for_clause block
+    (116) for_statement -> . FOR range_clause block
+    (118) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
+    (121) return_statement -> . RETURN expression_list
     (44) array_type -> . LBRACKET expression RBRACKET type
     (45) slice_type -> . LBRACKET RBRACKET type
     (46) struct_type -> . STRUCT LBRACE RBRACE
@@ -3669,9 +3675,9 @@ state 55
 
 state 56
 
-    (113) for_statement -> FOR . expression block
-    (114) for_statement -> FOR . for_clause block
-    (115) for_statement -> FOR . range_clause block
+    (114) for_statement -> FOR . expression block
+    (115) for_statement -> FOR . for_clause block
+    (116) for_statement -> FOR . range_clause block
     (1) expression -> . INTEGER
     (2) expression -> . FLOAT
     (3) expression -> . STRING_LITERAL
@@ -3687,9 +3693,9 @@ state 56
     (17) expression -> . type
     (86) expression -> . declaration
     (110) expression -> . statement
-    (116) for_clause -> . assignment_statement SEMICOLON expression SEMICOLON expression
-    (118) range_clause -> . expression_list NORMAL_ASSIGNMENT RANGE expression
-    (119) range_clause -> . identifier_list NORMAL_ASSIGNMENT RANGE expression
+    (117) for_clause -> . assignment_statement SEMICOLON expression SEMICOLON expression
+    (119) range_clause -> . expression_list NORMAL_ASSIGNMENT RANGE expression
+    (120) range_clause -> . identifier_list NORMAL_ASSIGNMENT RANGE expression
     (13) arithmetical_assignment -> . ID ARITHMETICAL_ASSIGNMENT expression
     (14) unary_assignment -> . ID UNARY_ASSIGNMENT
     (18) type -> . TYPE_BOOL
@@ -3719,7 +3725,7 @@ state 56
     (107) statement -> . for_statement
     (108) statement -> . assignment_statement
     (109) statement -> . return_statement
-    (117) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
+    (118) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
     (7) expression_list -> . expression
     (8) expression_list -> . expression expression_list
     (52) identifier_list -> . ID
@@ -3743,10 +3749,11 @@ state 56
     (104) import_decl -> . IMPORT string_lit
     (105) import_decl -> . IMPORT LPAREN string_lit RPAREN
     (112) if_statement -> . IF expression block
-    (113) for_statement -> . FOR expression block
-    (114) for_statement -> . FOR for_clause block
-    (115) for_statement -> . FOR range_clause block
-    (120) return_statement -> . RETURN expression_list
+    (113) if_statement -> . IF expression block ELSE block
+    (114) for_statement -> . FOR expression block
+    (115) for_statement -> . FOR for_clause block
+    (116) for_statement -> . FOR range_clause block
+    (121) return_statement -> . RETURN expression_list
     (44) array_type -> . LBRACKET expression RBRACKET type
     (45) slice_type -> . LBRACKET RBRACKET type
     (46) struct_type -> . STRUCT LBRACE RBRACE
@@ -3829,7 +3836,7 @@ state 56
 
 state 57
 
-    (120) return_statement -> RETURN . expression_list
+    (121) return_statement -> RETURN . expression_list
     (7) expression_list -> . expression
     (8) expression_list -> . expression expression_list
     (1) expression -> . INTEGER
@@ -3895,11 +3902,12 @@ state 57
     (104) import_decl -> . IMPORT string_lit
     (105) import_decl -> . IMPORT LPAREN string_lit RPAREN
     (112) if_statement -> . IF expression block
-    (113) for_statement -> . FOR expression block
-    (114) for_statement -> . FOR for_clause block
-    (115) for_statement -> . FOR range_clause block
-    (117) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
-    (120) return_statement -> . RETURN expression_list
+    (113) if_statement -> . IF expression block ELSE block
+    (114) for_statement -> . FOR expression block
+    (115) for_statement -> . FOR for_clause block
+    (116) for_statement -> . FOR range_clause block
+    (118) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
+    (121) return_statement -> . RETURN expression_list
     (44) array_type -> . LBRACKET expression RBRACKET type
     (45) slice_type -> . LBRACKET RBRACKET type
     (46) struct_type -> . STRUCT LBRACE RBRACE
@@ -4044,11 +4052,12 @@ state 58
     (104) import_decl -> . IMPORT string_lit
     (105) import_decl -> . IMPORT LPAREN string_lit RPAREN
     (112) if_statement -> . IF expression block
-    (113) for_statement -> . FOR expression block
-    (114) for_statement -> . FOR for_clause block
-    (115) for_statement -> . FOR range_clause block
-    (117) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
-    (120) return_statement -> . RETURN expression_list
+    (113) if_statement -> . IF expression block ELSE block
+    (114) for_statement -> . FOR expression block
+    (115) for_statement -> . FOR for_clause block
+    (116) for_statement -> . FOR range_clause block
+    (118) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
+    (121) return_statement -> . RETURN expression_list
     (44) array_type -> . LBRACKET expression RBRACKET type
     (45) slice_type -> . LBRACKET RBRACKET type
     (46) struct_type -> . STRUCT LBRACE RBRACE
@@ -4317,7 +4326,7 @@ state 64
 
 state 65
 
-    (117) assignment_statement -> expression_list NORMAL_ASSIGNMENT . expression_list
+    (118) assignment_statement -> expression_list NORMAL_ASSIGNMENT . expression_list
     (7) expression_list -> . expression
     (8) expression_list -> . expression expression_list
     (1) expression -> . INTEGER
@@ -4383,11 +4392,12 @@ state 65
     (104) import_decl -> . IMPORT string_lit
     (105) import_decl -> . IMPORT LPAREN string_lit RPAREN
     (112) if_statement -> . IF expression block
-    (113) for_statement -> . FOR expression block
-    (114) for_statement -> . FOR for_clause block
-    (115) for_statement -> . FOR range_clause block
-    (117) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
-    (120) return_statement -> . RETURN expression_list
+    (113) if_statement -> . IF expression block ELSE block
+    (114) for_statement -> . FOR expression block
+    (115) for_statement -> . FOR for_clause block
+    (116) for_statement -> . FOR range_clause block
+    (118) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
+    (121) return_statement -> . RETURN expression_list
     (44) array_type -> . LBRACKET expression RBRACKET type
     (45) slice_type -> . LBRACKET RBRACKET type
     (46) struct_type -> . STRUCT LBRACE RBRACE
@@ -4468,7 +4478,7 @@ state 65
 state 66
 
     (8) expression_list -> expression expression_list .
-    (117) assignment_statement -> expression_list . NORMAL_ASSIGNMENT expression_list
+    (118) assignment_statement -> expression_list . NORMAL_ASSIGNMENT expression_list
 
   ! shift/reduce conflict for NORMAL_ASSIGNMENT resolved as shift
     $end            reduce using rule 8 (expression_list -> expression expression_list .)
@@ -4590,11 +4600,12 @@ state 67
     (104) import_decl -> . IMPORT string_lit
     (105) import_decl -> . IMPORT LPAREN string_lit RPAREN
     (112) if_statement -> . IF expression block
-    (113) for_statement -> . FOR expression block
-    (114) for_statement -> . FOR for_clause block
-    (115) for_statement -> . FOR range_clause block
-    (117) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
-    (120) return_statement -> . RETURN expression_list
+    (113) if_statement -> . IF expression block ELSE block
+    (114) for_statement -> . FOR expression block
+    (115) for_statement -> . FOR for_clause block
+    (116) for_statement -> . FOR range_clause block
+    (118) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
+    (121) return_statement -> . RETURN expression_list
     (44) array_type -> . LBRACKET expression RBRACKET type
     (45) slice_type -> . LBRACKET RBRACKET type
     (46) struct_type -> . STRUCT LBRACE RBRACE
@@ -4740,11 +4751,12 @@ state 68
     (104) import_decl -> . IMPORT string_lit
     (105) import_decl -> . IMPORT LPAREN string_lit RPAREN
     (112) if_statement -> . IF expression block
-    (113) for_statement -> . FOR expression block
-    (114) for_statement -> . FOR for_clause block
-    (115) for_statement -> . FOR range_clause block
-    (117) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
-    (120) return_statement -> . RETURN expression_list
+    (113) if_statement -> . IF expression block ELSE block
+    (114) for_statement -> . FOR expression block
+    (115) for_statement -> . FOR for_clause block
+    (116) for_statement -> . FOR range_clause block
+    (118) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
+    (121) return_statement -> . RETURN expression_list
     (44) array_type -> . LBRACKET expression RBRACKET type
     (45) slice_type -> . LBRACKET RBRACKET type
     (46) struct_type -> . STRUCT LBRACE RBRACE
@@ -4890,11 +4902,12 @@ state 69
     (104) import_decl -> . IMPORT string_lit
     (105) import_decl -> . IMPORT LPAREN string_lit RPAREN
     (112) if_statement -> . IF expression block
-    (113) for_statement -> . FOR expression block
-    (114) for_statement -> . FOR for_clause block
-    (115) for_statement -> . FOR range_clause block
-    (117) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
-    (120) return_statement -> . RETURN expression_list
+    (113) if_statement -> . IF expression block ELSE block
+    (114) for_statement -> . FOR expression block
+    (115) for_statement -> . FOR for_clause block
+    (116) for_statement -> . FOR range_clause block
+    (118) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
+    (121) return_statement -> . RETURN expression_list
     (44) array_type -> . LBRACKET expression RBRACKET type
     (45) slice_type -> . LBRACKET RBRACKET type
     (46) struct_type -> . STRUCT LBRACE RBRACE
@@ -5040,11 +5053,12 @@ state 70
     (104) import_decl -> . IMPORT string_lit
     (105) import_decl -> . IMPORT LPAREN string_lit RPAREN
     (112) if_statement -> . IF expression block
-    (113) for_statement -> . FOR expression block
-    (114) for_statement -> . FOR for_clause block
-    (115) for_statement -> . FOR range_clause block
-    (117) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
-    (120) return_statement -> . RETURN expression_list
+    (113) if_statement -> . IF expression block ELSE block
+    (114) for_statement -> . FOR expression block
+    (115) for_statement -> . FOR for_clause block
+    (116) for_statement -> . FOR range_clause block
+    (118) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
+    (121) return_statement -> . RETURN expression_list
     (44) array_type -> . LBRACKET expression RBRACKET type
     (45) slice_type -> . LBRACKET RBRACKET type
     (46) struct_type -> . STRUCT LBRACE RBRACE
@@ -5190,11 +5204,12 @@ state 71
     (104) import_decl -> . IMPORT string_lit
     (105) import_decl -> . IMPORT LPAREN string_lit RPAREN
     (112) if_statement -> . IF expression block
-    (113) for_statement -> . FOR expression block
-    (114) for_statement -> . FOR for_clause block
-    (115) for_statement -> . FOR range_clause block
-    (117) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
-    (120) return_statement -> . RETURN expression_list
+    (113) if_statement -> . IF expression block ELSE block
+    (114) for_statement -> . FOR expression block
+    (115) for_statement -> . FOR for_clause block
+    (116) for_statement -> . FOR range_clause block
+    (118) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
+    (121) return_statement -> . RETURN expression_list
     (44) array_type -> . LBRACKET expression RBRACKET type
     (45) slice_type -> . LBRACKET RBRACKET type
     (46) struct_type -> . STRUCT LBRACE RBRACE
@@ -5403,11 +5418,12 @@ state 73
     (104) import_decl -> . IMPORT string_lit
     (105) import_decl -> . IMPORT LPAREN string_lit RPAREN
     (112) if_statement -> . IF expression block
-    (113) for_statement -> . FOR expression block
-    (114) for_statement -> . FOR for_clause block
-    (115) for_statement -> . FOR range_clause block
-    (117) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
-    (120) return_statement -> . RETURN expression_list
+    (113) if_statement -> . IF expression block ELSE block
+    (114) for_statement -> . FOR expression block
+    (115) for_statement -> . FOR for_clause block
+    (116) for_statement -> . FOR range_clause block
+    (118) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
+    (121) return_statement -> . RETURN expression_list
     (44) array_type -> . LBRACKET expression RBRACKET type
     (45) slice_type -> . LBRACKET RBRACKET type
     (46) struct_type -> . STRUCT LBRACE RBRACE
@@ -5493,7 +5509,7 @@ state 73
 
 state 74
 
-    (117) assignment_statement -> expression_list . NORMAL_ASSIGNMENT expression_list
+    (118) assignment_statement -> expression_list . NORMAL_ASSIGNMENT expression_list
 
     NORMAL_ASSIGNMENT shift and go to state 65
 
@@ -5572,11 +5588,12 @@ state 75
     (104) import_decl -> . IMPORT string_lit
     (105) import_decl -> . IMPORT LPAREN string_lit RPAREN
     (112) if_statement -> . IF expression block
-    (113) for_statement -> . FOR expression block
-    (114) for_statement -> . FOR for_clause block
-    (115) for_statement -> . FOR range_clause block
-    (117) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
-    (120) return_statement -> . RETURN expression_list
+    (113) if_statement -> . IF expression block ELSE block
+    (114) for_statement -> . FOR expression block
+    (115) for_statement -> . FOR for_clause block
+    (116) for_statement -> . FOR range_clause block
+    (118) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
+    (121) return_statement -> . RETURN expression_list
     (44) array_type -> . LBRACKET expression RBRACKET type
     (45) slice_type -> . LBRACKET RBRACKET type
     (46) struct_type -> . STRUCT LBRACE RBRACE
@@ -6725,6 +6742,7 @@ state 94
 state 95
 
     (112) if_statement -> IF expression . block
+    (113) if_statement -> IF expression . block ELSE block
     (6) expression -> expression . ARITHMETIC_OPERATOR expression
     (9) expression -> expression . OR expression
     (10) expression -> expression . AND expression
@@ -6797,11 +6815,12 @@ state 95
     (104) import_decl -> . IMPORT string_lit
     (105) import_decl -> . IMPORT LPAREN string_lit RPAREN
     (112) if_statement -> . IF expression block
-    (113) for_statement -> . FOR expression block
-    (114) for_statement -> . FOR for_clause block
-    (115) for_statement -> . FOR range_clause block
-    (117) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
-    (120) return_statement -> . RETURN expression_list
+    (113) if_statement -> . IF expression block ELSE block
+    (114) for_statement -> . FOR expression block
+    (115) for_statement -> . FOR for_clause block
+    (116) for_statement -> . FOR range_clause block
+    (118) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
+    (121) return_statement -> . RETURN expression_list
     (44) array_type -> . LBRACKET expression RBRACKET type
     (45) slice_type -> . LBRACKET RBRACKET type
     (46) struct_type -> . STRUCT LBRACE RBRACE
@@ -6888,7 +6907,7 @@ state 95
 
 state 96
 
-    (113) for_statement -> FOR expression . block
+    (114) for_statement -> FOR expression . block
     (6) expression -> expression . ARITHMETIC_OPERATOR expression
     (9) expression -> expression . OR expression
     (10) expression -> expression . AND expression
@@ -6961,11 +6980,12 @@ state 96
     (104) import_decl -> . IMPORT string_lit
     (105) import_decl -> . IMPORT LPAREN string_lit RPAREN
     (112) if_statement -> . IF expression block
-    (113) for_statement -> . FOR expression block
-    (114) for_statement -> . FOR for_clause block
-    (115) for_statement -> . FOR range_clause block
-    (117) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
-    (120) return_statement -> . RETURN expression_list
+    (113) if_statement -> . IF expression block ELSE block
+    (114) for_statement -> . FOR expression block
+    (115) for_statement -> . FOR for_clause block
+    (116) for_statement -> . FOR range_clause block
+    (118) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
+    (121) return_statement -> . RETURN expression_list
     (44) array_type -> . LBRACKET expression RBRACKET type
     (45) slice_type -> . LBRACKET RBRACKET type
     (46) struct_type -> . STRUCT LBRACE RBRACE
@@ -7052,7 +7072,7 @@ state 96
 
 state 97
 
-    (114) for_statement -> FOR for_clause . block
+    (115) for_statement -> FOR for_clause . block
     (111) block -> . LBRACE expression_list RBRACE
 
     LBRACE          shift and go to state 143
@@ -7061,7 +7081,7 @@ state 97
 
 state 98
 
-    (115) for_statement -> FOR range_clause . block
+    (116) for_statement -> FOR range_clause . block
     (111) block -> . LBRACE expression_list RBRACE
 
     LBRACE          shift and go to state 143
@@ -7130,7 +7150,7 @@ state 99
 
 state 100
 
-    (116) for_clause -> assignment_statement . SEMICOLON expression SEMICOLON expression
+    (117) for_clause -> assignment_statement . SEMICOLON expression SEMICOLON expression
     (108) statement -> assignment_statement .
 
     SEMICOLON       shift and go to state 147
@@ -7182,76 +7202,76 @@ state 100
 
 state 101
 
-    (118) range_clause -> expression_list . NORMAL_ASSIGNMENT RANGE expression
-    (117) assignment_statement -> expression_list . NORMAL_ASSIGNMENT expression_list
+    (119) range_clause -> expression_list . NORMAL_ASSIGNMENT RANGE expression
+    (118) assignment_statement -> expression_list . NORMAL_ASSIGNMENT expression_list
 
     NORMAL_ASSIGNMENT shift and go to state 148
 
 
 state 102
 
-    (119) range_clause -> identifier_list . NORMAL_ASSIGNMENT RANGE expression
+    (120) range_clause -> identifier_list . NORMAL_ASSIGNMENT RANGE expression
 
     NORMAL_ASSIGNMENT shift and go to state 149
 
 
 state 103
 
-    (120) return_statement -> RETURN expression_list .
-    (117) assignment_statement -> expression_list . NORMAL_ASSIGNMENT expression_list
+    (121) return_statement -> RETURN expression_list .
+    (118) assignment_statement -> expression_list . NORMAL_ASSIGNMENT expression_list
 
   ! shift/reduce conflict for NORMAL_ASSIGNMENT resolved as shift
-    ARITHMETIC_OPERATOR reduce using rule 120 (return_statement -> RETURN expression_list .)
-    OR              reduce using rule 120 (return_statement -> RETURN expression_list .)
-    AND             reduce using rule 120 (return_statement -> RETURN expression_list .)
-    COMPARISON_OPERATOR reduce using rule 120 (return_statement -> RETURN expression_list .)
-    INTEGER         reduce using rule 120 (return_statement -> RETURN expression_list .)
-    FLOAT           reduce using rule 120 (return_statement -> RETURN expression_list .)
-    STRING_LITERAL  reduce using rule 120 (return_statement -> RETURN expression_list .)
-    ID              reduce using rule 120 (return_statement -> RETURN expression_list .)
-    LPAREN          reduce using rule 120 (return_statement -> RETURN expression_list .)
-    NOT             reduce using rule 120 (return_statement -> RETURN expression_list .)
-    TYPE_BOOL       reduce using rule 120 (return_statement -> RETURN expression_list .)
-    TYPE_STRING     reduce using rule 120 (return_statement -> RETURN expression_list .)
-    TYPE_INT        reduce using rule 120 (return_statement -> RETURN expression_list .)
-    TYPE_INT8       reduce using rule 120 (return_statement -> RETURN expression_list .)
-    TYPE_INT16      reduce using rule 120 (return_statement -> RETURN expression_list .)
-    TYPE_INT32      reduce using rule 120 (return_statement -> RETURN expression_list .)
-    TYPE_INT64      reduce using rule 120 (return_statement -> RETURN expression_list .)
-    TYPE_UINT       reduce using rule 120 (return_statement -> RETURN expression_list .)
-    TYPE_UINT8      reduce using rule 120 (return_statement -> RETURN expression_list .)
-    TYPE_UINT16     reduce using rule 120 (return_statement -> RETURN expression_list .)
-    TYPE_UINT32     reduce using rule 120 (return_statement -> RETURN expression_list .)
-    TYPE_UINT64     reduce using rule 120 (return_statement -> RETURN expression_list .)
-    TYPE_UINTPTR    reduce using rule 120 (return_statement -> RETURN expression_list .)
-    TYPE_FLOAT32    reduce using rule 120 (return_statement -> RETURN expression_list .)
-    TYPE_FLOAT64    reduce using rule 120 (return_statement -> RETURN expression_list .)
-    TYPE_COMPLEX64  reduce using rule 120 (return_statement -> RETURN expression_list .)
-    TYPE_COMPLEX128 reduce using rule 120 (return_statement -> RETURN expression_list .)
-    CONST           reduce using rule 120 (return_statement -> RETURN expression_list .)
-    TYPE            reduce using rule 120 (return_statement -> RETURN expression_list .)
-    VAR             reduce using rule 120 (return_statement -> RETURN expression_list .)
-    FUNC            reduce using rule 120 (return_statement -> RETURN expression_list .)
-    IMPORT          reduce using rule 120 (return_statement -> RETURN expression_list .)
-    IF              reduce using rule 120 (return_statement -> RETURN expression_list .)
-    FOR             reduce using rule 120 (return_statement -> RETURN expression_list .)
-    RETURN          reduce using rule 120 (return_statement -> RETURN expression_list .)
-    LBRACKET        reduce using rule 120 (return_statement -> RETURN expression_list .)
-    STRUCT          reduce using rule 120 (return_statement -> RETURN expression_list .)
-    ASTERISKS       reduce using rule 120 (return_statement -> RETURN expression_list .)
-    INTERFACE       reduce using rule 120 (return_statement -> RETURN expression_list .)
-    MAP             reduce using rule 120 (return_statement -> RETURN expression_list .)
-    CHAN            reduce using rule 120 (return_statement -> RETURN expression_list .)
-    CHANNEL_OPERATOR reduce using rule 120 (return_statement -> RETURN expression_list .)
-    $end            reduce using rule 120 (return_statement -> RETURN expression_list .)
-    RPAREN          reduce using rule 120 (return_statement -> RETURN expression_list .)
-    LBRACE          reduce using rule 120 (return_statement -> RETURN expression_list .)
-    RBRACKET        reduce using rule 120 (return_statement -> RETURN expression_list .)
-    RBRACE          reduce using rule 120 (return_statement -> RETURN expression_list .)
-    SEMICOLON       reduce using rule 120 (return_statement -> RETURN expression_list .)
+    ARITHMETIC_OPERATOR reduce using rule 121 (return_statement -> RETURN expression_list .)
+    OR              reduce using rule 121 (return_statement -> RETURN expression_list .)
+    AND             reduce using rule 121 (return_statement -> RETURN expression_list .)
+    COMPARISON_OPERATOR reduce using rule 121 (return_statement -> RETURN expression_list .)
+    INTEGER         reduce using rule 121 (return_statement -> RETURN expression_list .)
+    FLOAT           reduce using rule 121 (return_statement -> RETURN expression_list .)
+    STRING_LITERAL  reduce using rule 121 (return_statement -> RETURN expression_list .)
+    ID              reduce using rule 121 (return_statement -> RETURN expression_list .)
+    LPAREN          reduce using rule 121 (return_statement -> RETURN expression_list .)
+    NOT             reduce using rule 121 (return_statement -> RETURN expression_list .)
+    TYPE_BOOL       reduce using rule 121 (return_statement -> RETURN expression_list .)
+    TYPE_STRING     reduce using rule 121 (return_statement -> RETURN expression_list .)
+    TYPE_INT        reduce using rule 121 (return_statement -> RETURN expression_list .)
+    TYPE_INT8       reduce using rule 121 (return_statement -> RETURN expression_list .)
+    TYPE_INT16      reduce using rule 121 (return_statement -> RETURN expression_list .)
+    TYPE_INT32      reduce using rule 121 (return_statement -> RETURN expression_list .)
+    TYPE_INT64      reduce using rule 121 (return_statement -> RETURN expression_list .)
+    TYPE_UINT       reduce using rule 121 (return_statement -> RETURN expression_list .)
+    TYPE_UINT8      reduce using rule 121 (return_statement -> RETURN expression_list .)
+    TYPE_UINT16     reduce using rule 121 (return_statement -> RETURN expression_list .)
+    TYPE_UINT32     reduce using rule 121 (return_statement -> RETURN expression_list .)
+    TYPE_UINT64     reduce using rule 121 (return_statement -> RETURN expression_list .)
+    TYPE_UINTPTR    reduce using rule 121 (return_statement -> RETURN expression_list .)
+    TYPE_FLOAT32    reduce using rule 121 (return_statement -> RETURN expression_list .)
+    TYPE_FLOAT64    reduce using rule 121 (return_statement -> RETURN expression_list .)
+    TYPE_COMPLEX64  reduce using rule 121 (return_statement -> RETURN expression_list .)
+    TYPE_COMPLEX128 reduce using rule 121 (return_statement -> RETURN expression_list .)
+    CONST           reduce using rule 121 (return_statement -> RETURN expression_list .)
+    TYPE            reduce using rule 121 (return_statement -> RETURN expression_list .)
+    VAR             reduce using rule 121 (return_statement -> RETURN expression_list .)
+    FUNC            reduce using rule 121 (return_statement -> RETURN expression_list .)
+    IMPORT          reduce using rule 121 (return_statement -> RETURN expression_list .)
+    IF              reduce using rule 121 (return_statement -> RETURN expression_list .)
+    FOR             reduce using rule 121 (return_statement -> RETURN expression_list .)
+    RETURN          reduce using rule 121 (return_statement -> RETURN expression_list .)
+    LBRACKET        reduce using rule 121 (return_statement -> RETURN expression_list .)
+    STRUCT          reduce using rule 121 (return_statement -> RETURN expression_list .)
+    ASTERISKS       reduce using rule 121 (return_statement -> RETURN expression_list .)
+    INTERFACE       reduce using rule 121 (return_statement -> RETURN expression_list .)
+    MAP             reduce using rule 121 (return_statement -> RETURN expression_list .)
+    CHAN            reduce using rule 121 (return_statement -> RETURN expression_list .)
+    CHANNEL_OPERATOR reduce using rule 121 (return_statement -> RETURN expression_list .)
+    $end            reduce using rule 121 (return_statement -> RETURN expression_list .)
+    RPAREN          reduce using rule 121 (return_statement -> RETURN expression_list .)
+    LBRACE          reduce using rule 121 (return_statement -> RETURN expression_list .)
+    RBRACKET        reduce using rule 121 (return_statement -> RETURN expression_list .)
+    RBRACE          reduce using rule 121 (return_statement -> RETURN expression_list .)
+    SEMICOLON       reduce using rule 121 (return_statement -> RETURN expression_list .)
     NORMAL_ASSIGNMENT shift and go to state 65
 
-  ! NORMAL_ASSIGNMENT [ reduce using rule 120 (return_statement -> RETURN expression_list .) ]
+  ! NORMAL_ASSIGNMENT [ reduce using rule 121 (return_statement -> RETURN expression_list .) ]
 
 
 state 104
@@ -7328,11 +7348,12 @@ state 104
     (104) import_decl -> . IMPORT string_lit
     (105) import_decl -> . IMPORT LPAREN string_lit RPAREN
     (112) if_statement -> . IF expression block
-    (113) for_statement -> . FOR expression block
-    (114) for_statement -> . FOR for_clause block
-    (115) for_statement -> . FOR range_clause block
-    (117) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
-    (120) return_statement -> . RETURN expression_list
+    (113) if_statement -> . IF expression block ELSE block
+    (114) for_statement -> . FOR expression block
+    (115) for_statement -> . FOR for_clause block
+    (116) for_statement -> . FOR range_clause block
+    (118) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
+    (121) return_statement -> . RETURN expression_list
     (44) array_type -> . LBRACKET expression RBRACKET type
     (45) slice_type -> . LBRACKET RBRACKET type
     (46) struct_type -> . STRUCT LBRACE RBRACE
@@ -7892,61 +7913,61 @@ state 113
 
 state 114
 
-    (117) assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .
-    (117) assignment_statement -> expression_list . NORMAL_ASSIGNMENT expression_list
+    (118) assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .
+    (118) assignment_statement -> expression_list . NORMAL_ASSIGNMENT expression_list
 
   ! shift/reduce conflict for NORMAL_ASSIGNMENT resolved as shift
-    ARITHMETIC_OPERATOR reduce using rule 117 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
-    OR              reduce using rule 117 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
-    AND             reduce using rule 117 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
-    COMPARISON_OPERATOR reduce using rule 117 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
-    INTEGER         reduce using rule 117 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
-    FLOAT           reduce using rule 117 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
-    STRING_LITERAL  reduce using rule 117 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
-    ID              reduce using rule 117 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
-    LPAREN          reduce using rule 117 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
-    NOT             reduce using rule 117 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
-    TYPE_BOOL       reduce using rule 117 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
-    TYPE_STRING     reduce using rule 117 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
-    TYPE_INT        reduce using rule 117 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
-    TYPE_INT8       reduce using rule 117 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
-    TYPE_INT16      reduce using rule 117 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
-    TYPE_INT32      reduce using rule 117 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
-    TYPE_INT64      reduce using rule 117 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
-    TYPE_UINT       reduce using rule 117 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
-    TYPE_UINT8      reduce using rule 117 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
-    TYPE_UINT16     reduce using rule 117 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
-    TYPE_UINT32     reduce using rule 117 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
-    TYPE_UINT64     reduce using rule 117 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
-    TYPE_UINTPTR    reduce using rule 117 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
-    TYPE_FLOAT32    reduce using rule 117 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
-    TYPE_FLOAT64    reduce using rule 117 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
-    TYPE_COMPLEX64  reduce using rule 117 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
-    TYPE_COMPLEX128 reduce using rule 117 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
-    CONST           reduce using rule 117 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
-    TYPE            reduce using rule 117 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
-    VAR             reduce using rule 117 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
-    FUNC            reduce using rule 117 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
-    IMPORT          reduce using rule 117 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
-    IF              reduce using rule 117 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
-    FOR             reduce using rule 117 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
-    RETURN          reduce using rule 117 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
-    LBRACKET        reduce using rule 117 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
-    STRUCT          reduce using rule 117 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
-    ASTERISKS       reduce using rule 117 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
-    INTERFACE       reduce using rule 117 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
-    MAP             reduce using rule 117 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
-    CHAN            reduce using rule 117 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
-    CHANNEL_OPERATOR reduce using rule 117 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
-    $end            reduce using rule 117 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
-    RPAREN          reduce using rule 117 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
-    LBRACE          reduce using rule 117 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
-    RBRACKET        reduce using rule 117 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
-    RBRACE          reduce using rule 117 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
-    SEMICOLON       reduce using rule 117 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
+    ARITHMETIC_OPERATOR reduce using rule 118 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
+    OR              reduce using rule 118 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
+    AND             reduce using rule 118 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
+    COMPARISON_OPERATOR reduce using rule 118 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
+    INTEGER         reduce using rule 118 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
+    FLOAT           reduce using rule 118 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
+    STRING_LITERAL  reduce using rule 118 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
+    ID              reduce using rule 118 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
+    LPAREN          reduce using rule 118 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
+    NOT             reduce using rule 118 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
+    TYPE_BOOL       reduce using rule 118 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
+    TYPE_STRING     reduce using rule 118 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
+    TYPE_INT        reduce using rule 118 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
+    TYPE_INT8       reduce using rule 118 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
+    TYPE_INT16      reduce using rule 118 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
+    TYPE_INT32      reduce using rule 118 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
+    TYPE_INT64      reduce using rule 118 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
+    TYPE_UINT       reduce using rule 118 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
+    TYPE_UINT8      reduce using rule 118 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
+    TYPE_UINT16     reduce using rule 118 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
+    TYPE_UINT32     reduce using rule 118 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
+    TYPE_UINT64     reduce using rule 118 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
+    TYPE_UINTPTR    reduce using rule 118 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
+    TYPE_FLOAT32    reduce using rule 118 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
+    TYPE_FLOAT64    reduce using rule 118 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
+    TYPE_COMPLEX64  reduce using rule 118 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
+    TYPE_COMPLEX128 reduce using rule 118 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
+    CONST           reduce using rule 118 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
+    TYPE            reduce using rule 118 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
+    VAR             reduce using rule 118 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
+    FUNC            reduce using rule 118 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
+    IMPORT          reduce using rule 118 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
+    IF              reduce using rule 118 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
+    FOR             reduce using rule 118 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
+    RETURN          reduce using rule 118 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
+    LBRACKET        reduce using rule 118 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
+    STRUCT          reduce using rule 118 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
+    ASTERISKS       reduce using rule 118 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
+    INTERFACE       reduce using rule 118 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
+    MAP             reduce using rule 118 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
+    CHAN            reduce using rule 118 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
+    CHANNEL_OPERATOR reduce using rule 118 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
+    $end            reduce using rule 118 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
+    RPAREN          reduce using rule 118 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
+    LBRACE          reduce using rule 118 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
+    RBRACKET        reduce using rule 118 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
+    RBRACE          reduce using rule 118 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
+    SEMICOLON       reduce using rule 118 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .)
     NORMAL_ASSIGNMENT shift and go to state 65
 
-  ! NORMAL_ASSIGNMENT [ reduce using rule 117 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .) ]
+  ! NORMAL_ASSIGNMENT [ reduce using rule 118 (assignment_statement -> expression_list NORMAL_ASSIGNMENT expression_list .) ]
 
 
 state 115
@@ -8023,11 +8044,12 @@ state 115
     (104) import_decl -> . IMPORT string_lit
     (105) import_decl -> . IMPORT LPAREN string_lit RPAREN
     (112) if_statement -> . IF expression block
-    (113) for_statement -> . FOR expression block
-    (114) for_statement -> . FOR for_clause block
-    (115) for_statement -> . FOR range_clause block
-    (117) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
-    (120) return_statement -> . RETURN expression_list
+    (113) if_statement -> . IF expression block ELSE block
+    (114) for_statement -> . FOR expression block
+    (115) for_statement -> . FOR for_clause block
+    (116) for_statement -> . FOR range_clause block
+    (118) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
+    (121) return_statement -> . RETURN expression_list
     (44) array_type -> . LBRACKET expression RBRACKET type
     (45) slice_type -> . LBRACKET RBRACKET type
     (46) struct_type -> . STRUCT LBRACE RBRACE
@@ -8277,11 +8299,12 @@ state 116
     (104) import_decl -> . IMPORT string_lit
     (105) import_decl -> . IMPORT LPAREN string_lit RPAREN
     (112) if_statement -> . IF expression block
-    (113) for_statement -> . FOR expression block
-    (114) for_statement -> . FOR for_clause block
-    (115) for_statement -> . FOR range_clause block
-    (117) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
-    (120) return_statement -> . RETURN expression_list
+    (113) if_statement -> . IF expression block ELSE block
+    (114) for_statement -> . FOR expression block
+    (115) for_statement -> . FOR for_clause block
+    (116) for_statement -> . FOR range_clause block
+    (118) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
+    (121) return_statement -> . RETURN expression_list
     (44) array_type -> . LBRACKET expression RBRACKET type
     (45) slice_type -> . LBRACKET RBRACKET type
     (46) struct_type -> . STRUCT LBRACE RBRACE
@@ -8531,11 +8554,12 @@ state 117
     (104) import_decl -> . IMPORT string_lit
     (105) import_decl -> . IMPORT LPAREN string_lit RPAREN
     (112) if_statement -> . IF expression block
-    (113) for_statement -> . FOR expression block
-    (114) for_statement -> . FOR for_clause block
-    (115) for_statement -> . FOR range_clause block
-    (117) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
-    (120) return_statement -> . RETURN expression_list
+    (113) if_statement -> . IF expression block ELSE block
+    (114) for_statement -> . FOR expression block
+    (115) for_statement -> . FOR for_clause block
+    (116) for_statement -> . FOR range_clause block
+    (118) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
+    (121) return_statement -> . RETURN expression_list
     (44) array_type -> . LBRACKET expression RBRACKET type
     (45) slice_type -> . LBRACKET RBRACKET type
     (46) struct_type -> . STRUCT LBRACE RBRACE
@@ -8785,11 +8809,12 @@ state 118
     (104) import_decl -> . IMPORT string_lit
     (105) import_decl -> . IMPORT LPAREN string_lit RPAREN
     (112) if_statement -> . IF expression block
-    (113) for_statement -> . FOR expression block
-    (114) for_statement -> . FOR for_clause block
-    (115) for_statement -> . FOR range_clause block
-    (117) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
-    (120) return_statement -> . RETURN expression_list
+    (113) if_statement -> . IF expression block ELSE block
+    (114) for_statement -> . FOR expression block
+    (115) for_statement -> . FOR for_clause block
+    (116) for_statement -> . FOR range_clause block
+    (118) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
+    (121) return_statement -> . RETURN expression_list
     (44) array_type -> . LBRACKET expression RBRACKET type
     (45) slice_type -> . LBRACKET RBRACKET type
     (46) struct_type -> . STRUCT LBRACE RBRACE
@@ -9039,11 +9064,12 @@ state 119
     (104) import_decl -> . IMPORT string_lit
     (105) import_decl -> . IMPORT LPAREN string_lit RPAREN
     (112) if_statement -> . IF expression block
-    (113) for_statement -> . FOR expression block
-    (114) for_statement -> . FOR for_clause block
-    (115) for_statement -> . FOR range_clause block
-    (117) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
-    (120) return_statement -> . RETURN expression_list
+    (113) if_statement -> . IF expression block ELSE block
+    (114) for_statement -> . FOR expression block
+    (115) for_statement -> . FOR for_clause block
+    (116) for_statement -> . FOR range_clause block
+    (118) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
+    (121) return_statement -> . RETURN expression_list
     (44) array_type -> . LBRACKET expression RBRACKET type
     (45) slice_type -> . LBRACKET RBRACKET type
     (46) struct_type -> . STRUCT LBRACE RBRACE
@@ -9349,11 +9375,12 @@ state 122
     (104) import_decl -> . IMPORT string_lit
     (105) import_decl -> . IMPORT LPAREN string_lit RPAREN
     (112) if_statement -> . IF expression block
-    (113) for_statement -> . FOR expression block
-    (114) for_statement -> . FOR for_clause block
-    (115) for_statement -> . FOR range_clause block
-    (117) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
-    (120) return_statement -> . RETURN expression_list
+    (113) if_statement -> . IF expression block ELSE block
+    (114) for_statement -> . FOR expression block
+    (115) for_statement -> . FOR for_clause block
+    (116) for_statement -> . FOR range_clause block
+    (118) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
+    (121) return_statement -> . RETURN expression_list
     (44) array_type -> . LBRACKET expression RBRACKET type
     (45) slice_type -> . LBRACKET RBRACKET type
     (46) struct_type -> . STRUCT LBRACE RBRACE
@@ -9722,11 +9749,12 @@ state 130
     (104) import_decl -> . IMPORT string_lit
     (105) import_decl -> . IMPORT LPAREN string_lit RPAREN
     (112) if_statement -> . IF expression block
-    (113) for_statement -> . FOR expression block
-    (114) for_statement -> . FOR for_clause block
-    (115) for_statement -> . FOR range_clause block
-    (117) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
-    (120) return_statement -> . RETURN expression_list
+    (113) if_statement -> . IF expression block ELSE block
+    (114) for_statement -> . FOR expression block
+    (115) for_statement -> . FOR for_clause block
+    (116) for_statement -> . FOR range_clause block
+    (118) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
+    (121) return_statement -> . RETURN expression_list
     (44) array_type -> . LBRACKET expression RBRACKET type
     (45) slice_type -> . LBRACKET RBRACKET type
     (46) struct_type -> . STRUCT LBRACE RBRACE
@@ -10370,6 +10398,7 @@ state 141
 state 142
 
     (112) if_statement -> IF expression block .
+    (113) if_statement -> IF expression block . ELSE block
 
     ARITHMETIC_OPERATOR reduce using rule 112 (if_statement -> IF expression block .)
     OR              reduce using rule 112 (if_statement -> IF expression block .)
@@ -10420,6 +10449,7 @@ state 142
     RBRACKET        reduce using rule 112 (if_statement -> IF expression block .)
     RBRACE          reduce using rule 112 (if_statement -> IF expression block .)
     SEMICOLON       reduce using rule 112 (if_statement -> IF expression block .)
+    ELSE            shift and go to state 183
 
 
 state 143
@@ -10490,11 +10520,12 @@ state 143
     (104) import_decl -> . IMPORT string_lit
     (105) import_decl -> . IMPORT LPAREN string_lit RPAREN
     (112) if_statement -> . IF expression block
-    (113) for_statement -> . FOR expression block
-    (114) for_statement -> . FOR for_clause block
-    (115) for_statement -> . FOR range_clause block
-    (117) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
-    (120) return_statement -> . RETURN expression_list
+    (113) if_statement -> . IF expression block ELSE block
+    (114) for_statement -> . FOR expression block
+    (115) for_statement -> . FOR for_clause block
+    (116) for_statement -> . FOR range_clause block
+    (118) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
+    (121) return_statement -> . RETURN expression_list
     (44) array_type -> . LBRACKET expression RBRACKET type
     (45) slice_type -> . LBRACKET RBRACKET type
     (46) struct_type -> . STRUCT LBRACE RBRACE
@@ -10546,7 +10577,7 @@ state 143
     CHAN            shift and go to state 63
     CHANNEL_OPERATOR shift and go to state 64
 
-    expression_list                shift and go to state 183
+    expression_list                shift and go to state 184
     expression                     shift and go to state 3
     arithmetical_assignment        shift and go to state 10
     unary_assignment               shift and go to state 11
@@ -10574,172 +10605,172 @@ state 143
 
 state 144
 
-    (113) for_statement -> FOR expression block .
+    (114) for_statement -> FOR expression block .
 
-    ARITHMETIC_OPERATOR reduce using rule 113 (for_statement -> FOR expression block .)
-    OR              reduce using rule 113 (for_statement -> FOR expression block .)
-    AND             reduce using rule 113 (for_statement -> FOR expression block .)
-    COMPARISON_OPERATOR reduce using rule 113 (for_statement -> FOR expression block .)
-    INTEGER         reduce using rule 113 (for_statement -> FOR expression block .)
-    FLOAT           reduce using rule 113 (for_statement -> FOR expression block .)
-    STRING_LITERAL  reduce using rule 113 (for_statement -> FOR expression block .)
-    ID              reduce using rule 113 (for_statement -> FOR expression block .)
-    LPAREN          reduce using rule 113 (for_statement -> FOR expression block .)
-    NOT             reduce using rule 113 (for_statement -> FOR expression block .)
-    TYPE_BOOL       reduce using rule 113 (for_statement -> FOR expression block .)
-    TYPE_STRING     reduce using rule 113 (for_statement -> FOR expression block .)
-    TYPE_INT        reduce using rule 113 (for_statement -> FOR expression block .)
-    TYPE_INT8       reduce using rule 113 (for_statement -> FOR expression block .)
-    TYPE_INT16      reduce using rule 113 (for_statement -> FOR expression block .)
-    TYPE_INT32      reduce using rule 113 (for_statement -> FOR expression block .)
-    TYPE_INT64      reduce using rule 113 (for_statement -> FOR expression block .)
-    TYPE_UINT       reduce using rule 113 (for_statement -> FOR expression block .)
-    TYPE_UINT8      reduce using rule 113 (for_statement -> FOR expression block .)
-    TYPE_UINT16     reduce using rule 113 (for_statement -> FOR expression block .)
-    TYPE_UINT32     reduce using rule 113 (for_statement -> FOR expression block .)
-    TYPE_UINT64     reduce using rule 113 (for_statement -> FOR expression block .)
-    TYPE_UINTPTR    reduce using rule 113 (for_statement -> FOR expression block .)
-    TYPE_FLOAT32    reduce using rule 113 (for_statement -> FOR expression block .)
-    TYPE_FLOAT64    reduce using rule 113 (for_statement -> FOR expression block .)
-    TYPE_COMPLEX64  reduce using rule 113 (for_statement -> FOR expression block .)
-    TYPE_COMPLEX128 reduce using rule 113 (for_statement -> FOR expression block .)
-    CONST           reduce using rule 113 (for_statement -> FOR expression block .)
-    TYPE            reduce using rule 113 (for_statement -> FOR expression block .)
-    VAR             reduce using rule 113 (for_statement -> FOR expression block .)
-    FUNC            reduce using rule 113 (for_statement -> FOR expression block .)
-    IMPORT          reduce using rule 113 (for_statement -> FOR expression block .)
-    IF              reduce using rule 113 (for_statement -> FOR expression block .)
-    FOR             reduce using rule 113 (for_statement -> FOR expression block .)
-    RETURN          reduce using rule 113 (for_statement -> FOR expression block .)
-    LBRACKET        reduce using rule 113 (for_statement -> FOR expression block .)
-    STRUCT          reduce using rule 113 (for_statement -> FOR expression block .)
-    ASTERISKS       reduce using rule 113 (for_statement -> FOR expression block .)
-    INTERFACE       reduce using rule 113 (for_statement -> FOR expression block .)
-    MAP             reduce using rule 113 (for_statement -> FOR expression block .)
-    CHAN            reduce using rule 113 (for_statement -> FOR expression block .)
-    CHANNEL_OPERATOR reduce using rule 113 (for_statement -> FOR expression block .)
-    NORMAL_ASSIGNMENT reduce using rule 113 (for_statement -> FOR expression block .)
-    $end            reduce using rule 113 (for_statement -> FOR expression block .)
-    RPAREN          reduce using rule 113 (for_statement -> FOR expression block .)
-    LBRACE          reduce using rule 113 (for_statement -> FOR expression block .)
-    RBRACKET        reduce using rule 113 (for_statement -> FOR expression block .)
-    RBRACE          reduce using rule 113 (for_statement -> FOR expression block .)
-    SEMICOLON       reduce using rule 113 (for_statement -> FOR expression block .)
+    ARITHMETIC_OPERATOR reduce using rule 114 (for_statement -> FOR expression block .)
+    OR              reduce using rule 114 (for_statement -> FOR expression block .)
+    AND             reduce using rule 114 (for_statement -> FOR expression block .)
+    COMPARISON_OPERATOR reduce using rule 114 (for_statement -> FOR expression block .)
+    INTEGER         reduce using rule 114 (for_statement -> FOR expression block .)
+    FLOAT           reduce using rule 114 (for_statement -> FOR expression block .)
+    STRING_LITERAL  reduce using rule 114 (for_statement -> FOR expression block .)
+    ID              reduce using rule 114 (for_statement -> FOR expression block .)
+    LPAREN          reduce using rule 114 (for_statement -> FOR expression block .)
+    NOT             reduce using rule 114 (for_statement -> FOR expression block .)
+    TYPE_BOOL       reduce using rule 114 (for_statement -> FOR expression block .)
+    TYPE_STRING     reduce using rule 114 (for_statement -> FOR expression block .)
+    TYPE_INT        reduce using rule 114 (for_statement -> FOR expression block .)
+    TYPE_INT8       reduce using rule 114 (for_statement -> FOR expression block .)
+    TYPE_INT16      reduce using rule 114 (for_statement -> FOR expression block .)
+    TYPE_INT32      reduce using rule 114 (for_statement -> FOR expression block .)
+    TYPE_INT64      reduce using rule 114 (for_statement -> FOR expression block .)
+    TYPE_UINT       reduce using rule 114 (for_statement -> FOR expression block .)
+    TYPE_UINT8      reduce using rule 114 (for_statement -> FOR expression block .)
+    TYPE_UINT16     reduce using rule 114 (for_statement -> FOR expression block .)
+    TYPE_UINT32     reduce using rule 114 (for_statement -> FOR expression block .)
+    TYPE_UINT64     reduce using rule 114 (for_statement -> FOR expression block .)
+    TYPE_UINTPTR    reduce using rule 114 (for_statement -> FOR expression block .)
+    TYPE_FLOAT32    reduce using rule 114 (for_statement -> FOR expression block .)
+    TYPE_FLOAT64    reduce using rule 114 (for_statement -> FOR expression block .)
+    TYPE_COMPLEX64  reduce using rule 114 (for_statement -> FOR expression block .)
+    TYPE_COMPLEX128 reduce using rule 114 (for_statement -> FOR expression block .)
+    CONST           reduce using rule 114 (for_statement -> FOR expression block .)
+    TYPE            reduce using rule 114 (for_statement -> FOR expression block .)
+    VAR             reduce using rule 114 (for_statement -> FOR expression block .)
+    FUNC            reduce using rule 114 (for_statement -> FOR expression block .)
+    IMPORT          reduce using rule 114 (for_statement -> FOR expression block .)
+    IF              reduce using rule 114 (for_statement -> FOR expression block .)
+    FOR             reduce using rule 114 (for_statement -> FOR expression block .)
+    RETURN          reduce using rule 114 (for_statement -> FOR expression block .)
+    LBRACKET        reduce using rule 114 (for_statement -> FOR expression block .)
+    STRUCT          reduce using rule 114 (for_statement -> FOR expression block .)
+    ASTERISKS       reduce using rule 114 (for_statement -> FOR expression block .)
+    INTERFACE       reduce using rule 114 (for_statement -> FOR expression block .)
+    MAP             reduce using rule 114 (for_statement -> FOR expression block .)
+    CHAN            reduce using rule 114 (for_statement -> FOR expression block .)
+    CHANNEL_OPERATOR reduce using rule 114 (for_statement -> FOR expression block .)
+    NORMAL_ASSIGNMENT reduce using rule 114 (for_statement -> FOR expression block .)
+    $end            reduce using rule 114 (for_statement -> FOR expression block .)
+    RPAREN          reduce using rule 114 (for_statement -> FOR expression block .)
+    LBRACE          reduce using rule 114 (for_statement -> FOR expression block .)
+    RBRACKET        reduce using rule 114 (for_statement -> FOR expression block .)
+    RBRACE          reduce using rule 114 (for_statement -> FOR expression block .)
+    SEMICOLON       reduce using rule 114 (for_statement -> FOR expression block .)
 
 
 state 145
 
-    (114) for_statement -> FOR for_clause block .
+    (115) for_statement -> FOR for_clause block .
 
-    ARITHMETIC_OPERATOR reduce using rule 114 (for_statement -> FOR for_clause block .)
-    OR              reduce using rule 114 (for_statement -> FOR for_clause block .)
-    AND             reduce using rule 114 (for_statement -> FOR for_clause block .)
-    COMPARISON_OPERATOR reduce using rule 114 (for_statement -> FOR for_clause block .)
-    INTEGER         reduce using rule 114 (for_statement -> FOR for_clause block .)
-    FLOAT           reduce using rule 114 (for_statement -> FOR for_clause block .)
-    STRING_LITERAL  reduce using rule 114 (for_statement -> FOR for_clause block .)
-    ID              reduce using rule 114 (for_statement -> FOR for_clause block .)
-    LPAREN          reduce using rule 114 (for_statement -> FOR for_clause block .)
-    NOT             reduce using rule 114 (for_statement -> FOR for_clause block .)
-    TYPE_BOOL       reduce using rule 114 (for_statement -> FOR for_clause block .)
-    TYPE_STRING     reduce using rule 114 (for_statement -> FOR for_clause block .)
-    TYPE_INT        reduce using rule 114 (for_statement -> FOR for_clause block .)
-    TYPE_INT8       reduce using rule 114 (for_statement -> FOR for_clause block .)
-    TYPE_INT16      reduce using rule 114 (for_statement -> FOR for_clause block .)
-    TYPE_INT32      reduce using rule 114 (for_statement -> FOR for_clause block .)
-    TYPE_INT64      reduce using rule 114 (for_statement -> FOR for_clause block .)
-    TYPE_UINT       reduce using rule 114 (for_statement -> FOR for_clause block .)
-    TYPE_UINT8      reduce using rule 114 (for_statement -> FOR for_clause block .)
-    TYPE_UINT16     reduce using rule 114 (for_statement -> FOR for_clause block .)
-    TYPE_UINT32     reduce using rule 114 (for_statement -> FOR for_clause block .)
-    TYPE_UINT64     reduce using rule 114 (for_statement -> FOR for_clause block .)
-    TYPE_UINTPTR    reduce using rule 114 (for_statement -> FOR for_clause block .)
-    TYPE_FLOAT32    reduce using rule 114 (for_statement -> FOR for_clause block .)
-    TYPE_FLOAT64    reduce using rule 114 (for_statement -> FOR for_clause block .)
-    TYPE_COMPLEX64  reduce using rule 114 (for_statement -> FOR for_clause block .)
-    TYPE_COMPLEX128 reduce using rule 114 (for_statement -> FOR for_clause block .)
-    CONST           reduce using rule 114 (for_statement -> FOR for_clause block .)
-    TYPE            reduce using rule 114 (for_statement -> FOR for_clause block .)
-    VAR             reduce using rule 114 (for_statement -> FOR for_clause block .)
-    FUNC            reduce using rule 114 (for_statement -> FOR for_clause block .)
-    IMPORT          reduce using rule 114 (for_statement -> FOR for_clause block .)
-    IF              reduce using rule 114 (for_statement -> FOR for_clause block .)
-    FOR             reduce using rule 114 (for_statement -> FOR for_clause block .)
-    RETURN          reduce using rule 114 (for_statement -> FOR for_clause block .)
-    LBRACKET        reduce using rule 114 (for_statement -> FOR for_clause block .)
-    STRUCT          reduce using rule 114 (for_statement -> FOR for_clause block .)
-    ASTERISKS       reduce using rule 114 (for_statement -> FOR for_clause block .)
-    INTERFACE       reduce using rule 114 (for_statement -> FOR for_clause block .)
-    MAP             reduce using rule 114 (for_statement -> FOR for_clause block .)
-    CHAN            reduce using rule 114 (for_statement -> FOR for_clause block .)
-    CHANNEL_OPERATOR reduce using rule 114 (for_statement -> FOR for_clause block .)
-    NORMAL_ASSIGNMENT reduce using rule 114 (for_statement -> FOR for_clause block .)
-    $end            reduce using rule 114 (for_statement -> FOR for_clause block .)
-    RPAREN          reduce using rule 114 (for_statement -> FOR for_clause block .)
-    LBRACE          reduce using rule 114 (for_statement -> FOR for_clause block .)
-    RBRACKET        reduce using rule 114 (for_statement -> FOR for_clause block .)
-    RBRACE          reduce using rule 114 (for_statement -> FOR for_clause block .)
-    SEMICOLON       reduce using rule 114 (for_statement -> FOR for_clause block .)
+    ARITHMETIC_OPERATOR reduce using rule 115 (for_statement -> FOR for_clause block .)
+    OR              reduce using rule 115 (for_statement -> FOR for_clause block .)
+    AND             reduce using rule 115 (for_statement -> FOR for_clause block .)
+    COMPARISON_OPERATOR reduce using rule 115 (for_statement -> FOR for_clause block .)
+    INTEGER         reduce using rule 115 (for_statement -> FOR for_clause block .)
+    FLOAT           reduce using rule 115 (for_statement -> FOR for_clause block .)
+    STRING_LITERAL  reduce using rule 115 (for_statement -> FOR for_clause block .)
+    ID              reduce using rule 115 (for_statement -> FOR for_clause block .)
+    LPAREN          reduce using rule 115 (for_statement -> FOR for_clause block .)
+    NOT             reduce using rule 115 (for_statement -> FOR for_clause block .)
+    TYPE_BOOL       reduce using rule 115 (for_statement -> FOR for_clause block .)
+    TYPE_STRING     reduce using rule 115 (for_statement -> FOR for_clause block .)
+    TYPE_INT        reduce using rule 115 (for_statement -> FOR for_clause block .)
+    TYPE_INT8       reduce using rule 115 (for_statement -> FOR for_clause block .)
+    TYPE_INT16      reduce using rule 115 (for_statement -> FOR for_clause block .)
+    TYPE_INT32      reduce using rule 115 (for_statement -> FOR for_clause block .)
+    TYPE_INT64      reduce using rule 115 (for_statement -> FOR for_clause block .)
+    TYPE_UINT       reduce using rule 115 (for_statement -> FOR for_clause block .)
+    TYPE_UINT8      reduce using rule 115 (for_statement -> FOR for_clause block .)
+    TYPE_UINT16     reduce using rule 115 (for_statement -> FOR for_clause block .)
+    TYPE_UINT32     reduce using rule 115 (for_statement -> FOR for_clause block .)
+    TYPE_UINT64     reduce using rule 115 (for_statement -> FOR for_clause block .)
+    TYPE_UINTPTR    reduce using rule 115 (for_statement -> FOR for_clause block .)
+    TYPE_FLOAT32    reduce using rule 115 (for_statement -> FOR for_clause block .)
+    TYPE_FLOAT64    reduce using rule 115 (for_statement -> FOR for_clause block .)
+    TYPE_COMPLEX64  reduce using rule 115 (for_statement -> FOR for_clause block .)
+    TYPE_COMPLEX128 reduce using rule 115 (for_statement -> FOR for_clause block .)
+    CONST           reduce using rule 115 (for_statement -> FOR for_clause block .)
+    TYPE            reduce using rule 115 (for_statement -> FOR for_clause block .)
+    VAR             reduce using rule 115 (for_statement -> FOR for_clause block .)
+    FUNC            reduce using rule 115 (for_statement -> FOR for_clause block .)
+    IMPORT          reduce using rule 115 (for_statement -> FOR for_clause block .)
+    IF              reduce using rule 115 (for_statement -> FOR for_clause block .)
+    FOR             reduce using rule 115 (for_statement -> FOR for_clause block .)
+    RETURN          reduce using rule 115 (for_statement -> FOR for_clause block .)
+    LBRACKET        reduce using rule 115 (for_statement -> FOR for_clause block .)
+    STRUCT          reduce using rule 115 (for_statement -> FOR for_clause block .)
+    ASTERISKS       reduce using rule 115 (for_statement -> FOR for_clause block .)
+    INTERFACE       reduce using rule 115 (for_statement -> FOR for_clause block .)
+    MAP             reduce using rule 115 (for_statement -> FOR for_clause block .)
+    CHAN            reduce using rule 115 (for_statement -> FOR for_clause block .)
+    CHANNEL_OPERATOR reduce using rule 115 (for_statement -> FOR for_clause block .)
+    NORMAL_ASSIGNMENT reduce using rule 115 (for_statement -> FOR for_clause block .)
+    $end            reduce using rule 115 (for_statement -> FOR for_clause block .)
+    RPAREN          reduce using rule 115 (for_statement -> FOR for_clause block .)
+    LBRACE          reduce using rule 115 (for_statement -> FOR for_clause block .)
+    RBRACKET        reduce using rule 115 (for_statement -> FOR for_clause block .)
+    RBRACE          reduce using rule 115 (for_statement -> FOR for_clause block .)
+    SEMICOLON       reduce using rule 115 (for_statement -> FOR for_clause block .)
 
 
 state 146
 
-    (115) for_statement -> FOR range_clause block .
+    (116) for_statement -> FOR range_clause block .
 
-    ARITHMETIC_OPERATOR reduce using rule 115 (for_statement -> FOR range_clause block .)
-    OR              reduce using rule 115 (for_statement -> FOR range_clause block .)
-    AND             reduce using rule 115 (for_statement -> FOR range_clause block .)
-    COMPARISON_OPERATOR reduce using rule 115 (for_statement -> FOR range_clause block .)
-    INTEGER         reduce using rule 115 (for_statement -> FOR range_clause block .)
-    FLOAT           reduce using rule 115 (for_statement -> FOR range_clause block .)
-    STRING_LITERAL  reduce using rule 115 (for_statement -> FOR range_clause block .)
-    ID              reduce using rule 115 (for_statement -> FOR range_clause block .)
-    LPAREN          reduce using rule 115 (for_statement -> FOR range_clause block .)
-    NOT             reduce using rule 115 (for_statement -> FOR range_clause block .)
-    TYPE_BOOL       reduce using rule 115 (for_statement -> FOR range_clause block .)
-    TYPE_STRING     reduce using rule 115 (for_statement -> FOR range_clause block .)
-    TYPE_INT        reduce using rule 115 (for_statement -> FOR range_clause block .)
-    TYPE_INT8       reduce using rule 115 (for_statement -> FOR range_clause block .)
-    TYPE_INT16      reduce using rule 115 (for_statement -> FOR range_clause block .)
-    TYPE_INT32      reduce using rule 115 (for_statement -> FOR range_clause block .)
-    TYPE_INT64      reduce using rule 115 (for_statement -> FOR range_clause block .)
-    TYPE_UINT       reduce using rule 115 (for_statement -> FOR range_clause block .)
-    TYPE_UINT8      reduce using rule 115 (for_statement -> FOR range_clause block .)
-    TYPE_UINT16     reduce using rule 115 (for_statement -> FOR range_clause block .)
-    TYPE_UINT32     reduce using rule 115 (for_statement -> FOR range_clause block .)
-    TYPE_UINT64     reduce using rule 115 (for_statement -> FOR range_clause block .)
-    TYPE_UINTPTR    reduce using rule 115 (for_statement -> FOR range_clause block .)
-    TYPE_FLOAT32    reduce using rule 115 (for_statement -> FOR range_clause block .)
-    TYPE_FLOAT64    reduce using rule 115 (for_statement -> FOR range_clause block .)
-    TYPE_COMPLEX64  reduce using rule 115 (for_statement -> FOR range_clause block .)
-    TYPE_COMPLEX128 reduce using rule 115 (for_statement -> FOR range_clause block .)
-    CONST           reduce using rule 115 (for_statement -> FOR range_clause block .)
-    TYPE            reduce using rule 115 (for_statement -> FOR range_clause block .)
-    VAR             reduce using rule 115 (for_statement -> FOR range_clause block .)
-    FUNC            reduce using rule 115 (for_statement -> FOR range_clause block .)
-    IMPORT          reduce using rule 115 (for_statement -> FOR range_clause block .)
-    IF              reduce using rule 115 (for_statement -> FOR range_clause block .)
-    FOR             reduce using rule 115 (for_statement -> FOR range_clause block .)
-    RETURN          reduce using rule 115 (for_statement -> FOR range_clause block .)
-    LBRACKET        reduce using rule 115 (for_statement -> FOR range_clause block .)
-    STRUCT          reduce using rule 115 (for_statement -> FOR range_clause block .)
-    ASTERISKS       reduce using rule 115 (for_statement -> FOR range_clause block .)
-    INTERFACE       reduce using rule 115 (for_statement -> FOR range_clause block .)
-    MAP             reduce using rule 115 (for_statement -> FOR range_clause block .)
-    CHAN            reduce using rule 115 (for_statement -> FOR range_clause block .)
-    CHANNEL_OPERATOR reduce using rule 115 (for_statement -> FOR range_clause block .)
-    NORMAL_ASSIGNMENT reduce using rule 115 (for_statement -> FOR range_clause block .)
-    $end            reduce using rule 115 (for_statement -> FOR range_clause block .)
-    RPAREN          reduce using rule 115 (for_statement -> FOR range_clause block .)
-    LBRACE          reduce using rule 115 (for_statement -> FOR range_clause block .)
-    RBRACKET        reduce using rule 115 (for_statement -> FOR range_clause block .)
-    RBRACE          reduce using rule 115 (for_statement -> FOR range_clause block .)
-    SEMICOLON       reduce using rule 115 (for_statement -> FOR range_clause block .)
+    ARITHMETIC_OPERATOR reduce using rule 116 (for_statement -> FOR range_clause block .)
+    OR              reduce using rule 116 (for_statement -> FOR range_clause block .)
+    AND             reduce using rule 116 (for_statement -> FOR range_clause block .)
+    COMPARISON_OPERATOR reduce using rule 116 (for_statement -> FOR range_clause block .)
+    INTEGER         reduce using rule 116 (for_statement -> FOR range_clause block .)
+    FLOAT           reduce using rule 116 (for_statement -> FOR range_clause block .)
+    STRING_LITERAL  reduce using rule 116 (for_statement -> FOR range_clause block .)
+    ID              reduce using rule 116 (for_statement -> FOR range_clause block .)
+    LPAREN          reduce using rule 116 (for_statement -> FOR range_clause block .)
+    NOT             reduce using rule 116 (for_statement -> FOR range_clause block .)
+    TYPE_BOOL       reduce using rule 116 (for_statement -> FOR range_clause block .)
+    TYPE_STRING     reduce using rule 116 (for_statement -> FOR range_clause block .)
+    TYPE_INT        reduce using rule 116 (for_statement -> FOR range_clause block .)
+    TYPE_INT8       reduce using rule 116 (for_statement -> FOR range_clause block .)
+    TYPE_INT16      reduce using rule 116 (for_statement -> FOR range_clause block .)
+    TYPE_INT32      reduce using rule 116 (for_statement -> FOR range_clause block .)
+    TYPE_INT64      reduce using rule 116 (for_statement -> FOR range_clause block .)
+    TYPE_UINT       reduce using rule 116 (for_statement -> FOR range_clause block .)
+    TYPE_UINT8      reduce using rule 116 (for_statement -> FOR range_clause block .)
+    TYPE_UINT16     reduce using rule 116 (for_statement -> FOR range_clause block .)
+    TYPE_UINT32     reduce using rule 116 (for_statement -> FOR range_clause block .)
+    TYPE_UINT64     reduce using rule 116 (for_statement -> FOR range_clause block .)
+    TYPE_UINTPTR    reduce using rule 116 (for_statement -> FOR range_clause block .)
+    TYPE_FLOAT32    reduce using rule 116 (for_statement -> FOR range_clause block .)
+    TYPE_FLOAT64    reduce using rule 116 (for_statement -> FOR range_clause block .)
+    TYPE_COMPLEX64  reduce using rule 116 (for_statement -> FOR range_clause block .)
+    TYPE_COMPLEX128 reduce using rule 116 (for_statement -> FOR range_clause block .)
+    CONST           reduce using rule 116 (for_statement -> FOR range_clause block .)
+    TYPE            reduce using rule 116 (for_statement -> FOR range_clause block .)
+    VAR             reduce using rule 116 (for_statement -> FOR range_clause block .)
+    FUNC            reduce using rule 116 (for_statement -> FOR range_clause block .)
+    IMPORT          reduce using rule 116 (for_statement -> FOR range_clause block .)
+    IF              reduce using rule 116 (for_statement -> FOR range_clause block .)
+    FOR             reduce using rule 116 (for_statement -> FOR range_clause block .)
+    RETURN          reduce using rule 116 (for_statement -> FOR range_clause block .)
+    LBRACKET        reduce using rule 116 (for_statement -> FOR range_clause block .)
+    STRUCT          reduce using rule 116 (for_statement -> FOR range_clause block .)
+    ASTERISKS       reduce using rule 116 (for_statement -> FOR range_clause block .)
+    INTERFACE       reduce using rule 116 (for_statement -> FOR range_clause block .)
+    MAP             reduce using rule 116 (for_statement -> FOR range_clause block .)
+    CHAN            reduce using rule 116 (for_statement -> FOR range_clause block .)
+    CHANNEL_OPERATOR reduce using rule 116 (for_statement -> FOR range_clause block .)
+    NORMAL_ASSIGNMENT reduce using rule 116 (for_statement -> FOR range_clause block .)
+    $end            reduce using rule 116 (for_statement -> FOR range_clause block .)
+    RPAREN          reduce using rule 116 (for_statement -> FOR range_clause block .)
+    LBRACE          reduce using rule 116 (for_statement -> FOR range_clause block .)
+    RBRACKET        reduce using rule 116 (for_statement -> FOR range_clause block .)
+    RBRACE          reduce using rule 116 (for_statement -> FOR range_clause block .)
+    SEMICOLON       reduce using rule 116 (for_statement -> FOR range_clause block .)
 
 
 state 147
 
-    (116) for_clause -> assignment_statement SEMICOLON . expression SEMICOLON expression
+    (117) for_clause -> assignment_statement SEMICOLON . expression SEMICOLON expression
     (1) expression -> . INTEGER
     (2) expression -> . FLOAT
     (3) expression -> . STRING_LITERAL
@@ -10803,11 +10834,12 @@ state 147
     (104) import_decl -> . IMPORT string_lit
     (105) import_decl -> . IMPORT LPAREN string_lit RPAREN
     (112) if_statement -> . IF expression block
-    (113) for_statement -> . FOR expression block
-    (114) for_statement -> . FOR for_clause block
-    (115) for_statement -> . FOR range_clause block
-    (117) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
-    (120) return_statement -> . RETURN expression_list
+    (113) if_statement -> . IF expression block ELSE block
+    (114) for_statement -> . FOR expression block
+    (115) for_statement -> . FOR for_clause block
+    (116) for_statement -> . FOR range_clause block
+    (118) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
+    (121) return_statement -> . RETURN expression_list
     (44) array_type -> . LBRACKET expression RBRACKET type
     (45) slice_type -> . LBRACKET RBRACKET type
     (46) struct_type -> . STRUCT LBRACE RBRACE
@@ -10862,7 +10894,7 @@ state 147
     CHANNEL_OPERATOR shift and go to state 64
 
     assignment_statement           shift and go to state 40
-    expression                     shift and go to state 184
+    expression                     shift and go to state 185
     arithmetical_assignment        shift and go to state 10
     unary_assignment               shift and go to state 11
     type                           shift and go to state 12
@@ -10889,8 +10921,8 @@ state 147
 
 state 148
 
-    (118) range_clause -> expression_list NORMAL_ASSIGNMENT . RANGE expression
-    (117) assignment_statement -> expression_list NORMAL_ASSIGNMENT . expression_list
+    (119) range_clause -> expression_list NORMAL_ASSIGNMENT . RANGE expression
+    (118) assignment_statement -> expression_list NORMAL_ASSIGNMENT . expression_list
     (7) expression_list -> . expression
     (8) expression_list -> . expression expression_list
     (1) expression -> . INTEGER
@@ -10956,11 +10988,12 @@ state 148
     (104) import_decl -> . IMPORT string_lit
     (105) import_decl -> . IMPORT LPAREN string_lit RPAREN
     (112) if_statement -> . IF expression block
-    (113) for_statement -> . FOR expression block
-    (114) for_statement -> . FOR for_clause block
-    (115) for_statement -> . FOR range_clause block
-    (117) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
-    (120) return_statement -> . RETURN expression_list
+    (113) if_statement -> . IF expression block ELSE block
+    (114) for_statement -> . FOR expression block
+    (115) for_statement -> . FOR for_clause block
+    (116) for_statement -> . FOR range_clause block
+    (118) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
+    (121) return_statement -> . RETURN expression_list
     (44) array_type -> . LBRACKET expression RBRACKET type
     (45) slice_type -> . LBRACKET RBRACKET type
     (46) struct_type -> . STRUCT LBRACE RBRACE
@@ -10973,7 +11006,7 @@ state 148
     (79) channel_type -> . CHAN CHANNEL_OPERATOR type
     (80) channel_type -> . CHANNEL_OPERATOR CHAN type
 
-    RANGE           shift and go to state 185
+    RANGE           shift and go to state 186
     INTEGER         shift and go to state 4
     FLOAT           shift and go to state 5
     STRING_LITERAL  shift and go to state 6
@@ -11041,9 +11074,9 @@ state 148
 
 state 149
 
-    (119) range_clause -> identifier_list NORMAL_ASSIGNMENT . RANGE expression
+    (120) range_clause -> identifier_list NORMAL_ASSIGNMENT . RANGE expression
 
-    RANGE           shift and go to state 186
+    RANGE           shift and go to state 187
 
 
 state 150
@@ -11113,7 +11146,7 @@ state 150
     CHAN            shift and go to state 63
     CHANNEL_OPERATOR shift and go to state 64
 
-    type                           shift and go to state 187
+    type                           shift and go to state 188
     type_lit                       shift and go to state 32
     array_type                     shift and go to state 42
     slice_type                     shift and go to state 43
@@ -11240,7 +11273,7 @@ state 153
 
     (47) struct_type -> STRUCT LBRACE field_decl . RBRACE
 
-    RBRACE          shift and go to state 188
+    RBRACE          shift and go to state 189
 
 
 state 154
@@ -11311,7 +11344,7 @@ state 154
     CHAN            shift and go to state 63
     CHANNEL_OPERATOR shift and go to state 64
 
-    type                           shift and go to state 189
+    type                           shift and go to state 190
     type_lit                       shift and go to state 32
     array_type                     shift and go to state 42
     slice_type                     shift and go to state 43
@@ -11331,20 +11364,20 @@ state 155
     RBRACE          reduce using rule 51 (field_decl -> embedded_field .)
     STRING_LITERAL  shift and go to state 94
 
-    string_lit                     shift and go to state 190
+    string_lit                     shift and go to state 191
 
 state 156
 
     (54) embedded_field -> ASTERISKS . ID
 
-    ID              shift and go to state 191
+    ID              shift and go to state 192
 
 
 state 157
 
     (71) interface_type -> INTERFACE LBRACE method_spec . RBRACE
 
-    RBRACE          shift and go to state 192
+    RBRACE          shift and go to state 193
 
 
 state 158
@@ -11357,7 +11390,7 @@ state 158
 
     LPAREN          shift and go to state 91
 
-    signature                      shift and go to state 193
+    signature                      shift and go to state 194
     parameters                     shift and go to state 90
 
 state 159
@@ -11380,7 +11413,7 @@ state 161
 
     (76) map_type -> MAP LBRACKET key_type . RBRACKET type
 
-    RBRACKET        shift and go to state 194
+    RBRACKET        shift and go to state 195
 
 
 state 162
@@ -11459,7 +11492,7 @@ state 163
     MAP             shift and go to state 62
     CHAN            shift and go to state 63
 
-    type                           shift and go to state 195
+    type                           shift and go to state 196
     type_lit                       shift and go to state 32
     array_type                     shift and go to state 42
     slice_type                     shift and go to state 43
@@ -11640,7 +11673,7 @@ state 166
 state 167
 
     (89) const_spec -> identifier_list NORMAL_ASSIGNMENT expression_list .
-    (117) assignment_statement -> expression_list . NORMAL_ASSIGNMENT expression_list
+    (118) assignment_statement -> expression_list . NORMAL_ASSIGNMENT expression_list
 
   ! shift/reduce conflict for NORMAL_ASSIGNMENT resolved as shift
     $end            reduce using rule 89 (const_spec -> identifier_list NORMAL_ASSIGNMENT expression_list .)
@@ -11764,11 +11797,12 @@ state 168
     (104) import_decl -> . IMPORT string_lit
     (105) import_decl -> . IMPORT LPAREN string_lit RPAREN
     (112) if_statement -> . IF expression block
-    (113) for_statement -> . FOR expression block
-    (114) for_statement -> . FOR for_clause block
-    (115) for_statement -> . FOR range_clause block
-    (117) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
-    (120) return_statement -> . RETURN expression_list
+    (113) if_statement -> . IF expression block ELSE block
+    (114) for_statement -> . FOR expression block
+    (115) for_statement -> . FOR for_clause block
+    (116) for_statement -> . FOR range_clause block
+    (118) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
+    (121) return_statement -> . RETURN expression_list
     (44) array_type -> . LBRACKET expression RBRACKET type
     (45) slice_type -> . LBRACKET RBRACKET type
     (46) struct_type -> . STRUCT LBRACE RBRACE
@@ -11821,7 +11855,7 @@ state 168
     CHANNEL_OPERATOR shift and go to state 64
 
     type                           shift and go to state 12
-    expression_list                shift and go to state 196
+    expression_list                shift and go to state 197
     expression                     shift and go to state 3
     arithmetical_assignment        shift and go to state 10
     unary_assignment               shift and go to state 11
@@ -12114,11 +12148,12 @@ state 173
     (104) import_decl -> . IMPORT string_lit
     (105) import_decl -> . IMPORT LPAREN string_lit RPAREN
     (112) if_statement -> . IF expression block
-    (113) for_statement -> . FOR expression block
-    (114) for_statement -> . FOR for_clause block
-    (115) for_statement -> . FOR range_clause block
-    (117) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
-    (120) return_statement -> . RETURN expression_list
+    (113) if_statement -> . IF expression block ELSE block
+    (114) for_statement -> . FOR expression block
+    (115) for_statement -> . FOR for_clause block
+    (116) for_statement -> . FOR range_clause block
+    (118) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
+    (121) return_statement -> . RETURN expression_list
     (44) array_type -> . LBRACKET expression RBRACKET type
     (45) slice_type -> . LBRACKET RBRACKET type
     (46) struct_type -> . STRUCT LBRACE RBRACE
@@ -12171,7 +12206,7 @@ state 173
     CHANNEL_OPERATOR shift and go to state 64
 
     type                           shift and go to state 12
-    expression_list                shift and go to state 197
+    expression_list                shift and go to state 198
     expression                     shift and go to state 3
     arithmetical_assignment        shift and go to state 10
     unary_assignment               shift and go to state 11
@@ -12199,7 +12234,7 @@ state 173
 state 174
 
     (101) var_spec -> identifier_list NORMAL_ASSIGNMENT expression_list .
-    (117) assignment_statement -> expression_list . NORMAL_ASSIGNMENT expression_list
+    (118) assignment_statement -> expression_list . NORMAL_ASSIGNMENT expression_list
 
   ! shift/reduce conflict for NORMAL_ASSIGNMENT resolved as shift
     $end            reduce using rule 101 (var_spec -> identifier_list NORMAL_ASSIGNMENT expression_list .)
@@ -12314,7 +12349,7 @@ state 176
 
     (62) result -> LPAREN type . RPAREN
 
-    RPAREN          shift and go to state 198
+    RPAREN          shift and go to state 199
 
 
 state 177
@@ -12389,7 +12424,7 @@ state 178
     ID              shift and go to state 79
 
     parameter_decl                 shift and go to state 138
-    parameter_list                 shift and go to state 199
+    parameter_list                 shift and go to state 200
     identifier_list                shift and go to state 139
 
 state 179
@@ -12467,7 +12502,7 @@ state 180
     CHAN            shift and go to state 63
     CHANNEL_OPERATOR shift and go to state 64
 
-    type                           shift and go to state 200
+    type                           shift and go to state 201
     type_lit                       shift and go to state 32
     array_type                     shift and go to state 42
     slice_type                     shift and go to state 43
@@ -12543,16 +12578,25 @@ state 182
 
 state 183
 
-    (111) block -> LBRACE expression_list . RBRACE
-    (117) assignment_statement -> expression_list . NORMAL_ASSIGNMENT expression_list
+    (113) if_statement -> IF expression block ELSE . block
+    (111) block -> . LBRACE expression_list RBRACE
 
-    RBRACE          shift and go to state 201
-    NORMAL_ASSIGNMENT shift and go to state 65
+    LBRACE          shift and go to state 143
 
+    block                          shift and go to state 202
 
 state 184
 
-    (116) for_clause -> assignment_statement SEMICOLON expression . SEMICOLON expression
+    (111) block -> LBRACE expression_list . RBRACE
+    (118) assignment_statement -> expression_list . NORMAL_ASSIGNMENT expression_list
+
+    RBRACE          shift and go to state 203
+    NORMAL_ASSIGNMENT shift and go to state 65
+
+
+state 185
+
+    (117) for_clause -> assignment_statement SEMICOLON expression . SEMICOLON expression
     (6) expression -> expression . ARITHMETIC_OPERATOR expression
     (9) expression -> expression . OR expression
     (10) expression -> expression . AND expression
@@ -12624,11 +12668,12 @@ state 184
     (104) import_decl -> . IMPORT string_lit
     (105) import_decl -> . IMPORT LPAREN string_lit RPAREN
     (112) if_statement -> . IF expression block
-    (113) for_statement -> . FOR expression block
-    (114) for_statement -> . FOR for_clause block
-    (115) for_statement -> . FOR range_clause block
-    (117) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
-    (120) return_statement -> . RETURN expression_list
+    (113) if_statement -> . IF expression block ELSE block
+    (114) for_statement -> . FOR expression block
+    (115) for_statement -> . FOR for_clause block
+    (116) for_statement -> . FOR range_clause block
+    (118) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
+    (121) return_statement -> . RETURN expression_list
     (44) array_type -> . LBRACKET expression RBRACKET type
     (45) slice_type -> . LBRACKET RBRACKET type
     (46) struct_type -> . STRUCT LBRACE RBRACE
@@ -12641,7 +12686,7 @@ state 184
     (79) channel_type -> . CHAN CHANNEL_OPERATOR type
     (80) channel_type -> . CHANNEL_OPERATOR CHAN type
 
-    SEMICOLON       shift and go to state 202
+    SEMICOLON       shift and go to state 204
     ARITHMETIC_OPERATOR shift and go to state 67
     OR              shift and go to state 68
     AND             shift and go to state 69
@@ -12712,159 +12757,9 @@ state 184
     map_type                       shift and go to state 48
     channel_type                   shift and go to state 49
 
-state 185
-
-    (118) range_clause -> expression_list NORMAL_ASSIGNMENT RANGE . expression
-    (1) expression -> . INTEGER
-    (2) expression -> . FLOAT
-    (3) expression -> . STRING_LITERAL
-    (4) expression -> . ID
-    (5) expression -> . LPAREN expression RPAREN
-    (6) expression -> . expression ARITHMETIC_OPERATOR expression
-    (9) expression -> . expression OR expression
-    (10) expression -> . expression AND expression
-    (11) expression -> . NOT expression
-    (12) expression -> . expression COMPARISON_OPERATOR expression
-    (15) expression -> . arithmetical_assignment
-    (16) expression -> . unary_assignment
-    (17) expression -> . type
-    (86) expression -> . declaration
-    (110) expression -> . statement
-    (13) arithmetical_assignment -> . ID ARITHMETICAL_ASSIGNMENT expression
-    (14) unary_assignment -> . ID UNARY_ASSIGNMENT
-    (18) type -> . TYPE_BOOL
-    (19) type -> . TYPE_STRING
-    (20) type -> . TYPE_INT
-    (21) type -> . TYPE_INT8
-    (22) type -> . TYPE_INT16
-    (23) type -> . TYPE_INT32
-    (24) type -> . TYPE_INT64
-    (25) type -> . TYPE_UINT
-    (26) type -> . TYPE_UINT8
-    (27) type -> . TYPE_UINT16
-    (28) type -> . TYPE_UINT32
-    (29) type -> . TYPE_UINT64
-    (30) type -> . TYPE_UINTPTR
-    (31) type -> . TYPE_FLOAT32
-    (32) type -> . TYPE_FLOAT64
-    (33) type -> . TYPE_COMPLEX64
-    (34) type -> . TYPE_COMPLEX128
-    (43) type -> . type_lit
-    (81) declaration -> . const_decl
-    (82) declaration -> . type_decl
-    (83) declaration -> . var_decl
-    (84) declaration -> . func_decl
-    (85) declaration -> . import_decl
-    (106) statement -> . if_statement
-    (107) statement -> . for_statement
-    (108) statement -> . assignment_statement
-    (109) statement -> . return_statement
-    (35) type_lit -> . array_type
-    (36) type_lit -> . slice_type
-    (37) type_lit -> . struct_type
-    (38) type_lit -> . pointer_type
-    (39) type_lit -> . function_type
-    (40) type_lit -> . interface_type
-    (41) type_lit -> . map_type
-    (42) type_lit -> . channel_type
-    (87) const_decl -> . CONST const_spec
-    (88) const_decl -> . CONST LPAREN const_spec RPAREN
-    (91) type_decl -> . TYPE type_spec
-    (92) type_decl -> . TYPE LPAREN type_spec RPAREN
-    (97) var_decl -> . VAR var_spec
-    (98) var_decl -> . VAR LPAREN var_spec RPAREN
-    (102) func_decl -> . FUNC ID signature
-    (103) func_decl -> . FUNC ID signature block
-    (104) import_decl -> . IMPORT string_lit
-    (105) import_decl -> . IMPORT LPAREN string_lit RPAREN
-    (112) if_statement -> . IF expression block
-    (113) for_statement -> . FOR expression block
-    (114) for_statement -> . FOR for_clause block
-    (115) for_statement -> . FOR range_clause block
-    (117) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
-    (120) return_statement -> . RETURN expression_list
-    (44) array_type -> . LBRACKET expression RBRACKET type
-    (45) slice_type -> . LBRACKET RBRACKET type
-    (46) struct_type -> . STRUCT LBRACE RBRACE
-    (47) struct_type -> . STRUCT LBRACE field_decl RBRACE
-    (56) pointer_type -> . ASTERISKS type
-    (57) function_type -> . FUNC signature
-    (71) interface_type -> . INTERFACE LBRACE method_spec RBRACE
-    (76) map_type -> . MAP LBRACKET key_type RBRACKET type
-    (78) channel_type -> . CHAN type
-    (79) channel_type -> . CHAN CHANNEL_OPERATOR type
-    (80) channel_type -> . CHANNEL_OPERATOR CHAN type
-    (7) expression_list -> . expression
-    (8) expression_list -> . expression expression_list
-
-    INTEGER         shift and go to state 4
-    FLOAT           shift and go to state 5
-    STRING_LITERAL  shift and go to state 6
-    ID              shift and go to state 7
-    LPAREN          shift and go to state 8
-    NOT             shift and go to state 9
-    TYPE_BOOL       shift and go to state 15
-    TYPE_STRING     shift and go to state 16
-    TYPE_INT        shift and go to state 17
-    TYPE_INT8       shift and go to state 18
-    TYPE_INT16      shift and go to state 19
-    TYPE_INT32      shift and go to state 20
-    TYPE_INT64      shift and go to state 21
-    TYPE_UINT       shift and go to state 22
-    TYPE_UINT8      shift and go to state 23
-    TYPE_UINT16     shift and go to state 24
-    TYPE_UINT32     shift and go to state 25
-    TYPE_UINT64     shift and go to state 26
-    TYPE_UINTPTR    shift and go to state 27
-    TYPE_FLOAT32    shift and go to state 28
-    TYPE_FLOAT64    shift and go to state 29
-    TYPE_COMPLEX64  shift and go to state 30
-    TYPE_COMPLEX128 shift and go to state 31
-    CONST           shift and go to state 50
-    TYPE            shift and go to state 51
-    VAR             shift and go to state 52
-    FUNC            shift and go to state 53
-    IMPORT          shift and go to state 54
-    IF              shift and go to state 55
-    FOR             shift and go to state 56
-    RETURN          shift and go to state 57
-    LBRACKET        shift and go to state 58
-    STRUCT          shift and go to state 59
-    ASTERISKS       shift and go to state 60
-    INTERFACE       shift and go to state 61
-    MAP             shift and go to state 62
-    CHAN            shift and go to state 63
-    CHANNEL_OPERATOR shift and go to state 64
-
-    expression_list                shift and go to state 74
-    expression                     shift and go to state 203
-    arithmetical_assignment        shift and go to state 10
-    unary_assignment               shift and go to state 11
-    type                           shift and go to state 12
-    declaration                    shift and go to state 13
-    statement                      shift and go to state 14
-    type_lit                       shift and go to state 32
-    const_decl                     shift and go to state 33
-    type_decl                      shift and go to state 34
-    var_decl                       shift and go to state 35
-    func_decl                      shift and go to state 36
-    import_decl                    shift and go to state 37
-    if_statement                   shift and go to state 38
-    for_statement                  shift and go to state 39
-    assignment_statement           shift and go to state 40
-    return_statement               shift and go to state 41
-    array_type                     shift and go to state 42
-    slice_type                     shift and go to state 43
-    struct_type                    shift and go to state 44
-    pointer_type                   shift and go to state 45
-    function_type                  shift and go to state 46
-    interface_type                 shift and go to state 47
-    map_type                       shift and go to state 48
-    channel_type                   shift and go to state 49
-
 state 186
 
-    (119) range_clause -> identifier_list NORMAL_ASSIGNMENT RANGE . expression
+    (119) range_clause -> expression_list NORMAL_ASSIGNMENT RANGE . expression
     (1) expression -> . INTEGER
     (2) expression -> . FLOAT
     (3) expression -> . STRING_LITERAL
@@ -12928,11 +12823,12 @@ state 186
     (104) import_decl -> . IMPORT string_lit
     (105) import_decl -> . IMPORT LPAREN string_lit RPAREN
     (112) if_statement -> . IF expression block
-    (113) for_statement -> . FOR expression block
-    (114) for_statement -> . FOR for_clause block
-    (115) for_statement -> . FOR range_clause block
-    (117) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
-    (120) return_statement -> . RETURN expression_list
+    (113) if_statement -> . IF expression block ELSE block
+    (114) for_statement -> . FOR expression block
+    (115) for_statement -> . FOR for_clause block
+    (116) for_statement -> . FOR range_clause block
+    (118) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
+    (121) return_statement -> . RETURN expression_list
     (44) array_type -> . LBRACKET expression RBRACKET type
     (45) slice_type -> . LBRACKET RBRACKET type
     (46) struct_type -> . STRUCT LBRACE RBRACE
@@ -12986,7 +12882,158 @@ state 186
     CHAN            shift and go to state 63
     CHANNEL_OPERATOR shift and go to state 64
 
-    expression                     shift and go to state 204
+    expression_list                shift and go to state 74
+    expression                     shift and go to state 205
+    arithmetical_assignment        shift and go to state 10
+    unary_assignment               shift and go to state 11
+    type                           shift and go to state 12
+    declaration                    shift and go to state 13
+    statement                      shift and go to state 14
+    type_lit                       shift and go to state 32
+    const_decl                     shift and go to state 33
+    type_decl                      shift and go to state 34
+    var_decl                       shift and go to state 35
+    func_decl                      shift and go to state 36
+    import_decl                    shift and go to state 37
+    if_statement                   shift and go to state 38
+    for_statement                  shift and go to state 39
+    assignment_statement           shift and go to state 40
+    return_statement               shift and go to state 41
+    array_type                     shift and go to state 42
+    slice_type                     shift and go to state 43
+    struct_type                    shift and go to state 44
+    pointer_type                   shift and go to state 45
+    function_type                  shift and go to state 46
+    interface_type                 shift and go to state 47
+    map_type                       shift and go to state 48
+    channel_type                   shift and go to state 49
+
+state 187
+
+    (120) range_clause -> identifier_list NORMAL_ASSIGNMENT RANGE . expression
+    (1) expression -> . INTEGER
+    (2) expression -> . FLOAT
+    (3) expression -> . STRING_LITERAL
+    (4) expression -> . ID
+    (5) expression -> . LPAREN expression RPAREN
+    (6) expression -> . expression ARITHMETIC_OPERATOR expression
+    (9) expression -> . expression OR expression
+    (10) expression -> . expression AND expression
+    (11) expression -> . NOT expression
+    (12) expression -> . expression COMPARISON_OPERATOR expression
+    (15) expression -> . arithmetical_assignment
+    (16) expression -> . unary_assignment
+    (17) expression -> . type
+    (86) expression -> . declaration
+    (110) expression -> . statement
+    (13) arithmetical_assignment -> . ID ARITHMETICAL_ASSIGNMENT expression
+    (14) unary_assignment -> . ID UNARY_ASSIGNMENT
+    (18) type -> . TYPE_BOOL
+    (19) type -> . TYPE_STRING
+    (20) type -> . TYPE_INT
+    (21) type -> . TYPE_INT8
+    (22) type -> . TYPE_INT16
+    (23) type -> . TYPE_INT32
+    (24) type -> . TYPE_INT64
+    (25) type -> . TYPE_UINT
+    (26) type -> . TYPE_UINT8
+    (27) type -> . TYPE_UINT16
+    (28) type -> . TYPE_UINT32
+    (29) type -> . TYPE_UINT64
+    (30) type -> . TYPE_UINTPTR
+    (31) type -> . TYPE_FLOAT32
+    (32) type -> . TYPE_FLOAT64
+    (33) type -> . TYPE_COMPLEX64
+    (34) type -> . TYPE_COMPLEX128
+    (43) type -> . type_lit
+    (81) declaration -> . const_decl
+    (82) declaration -> . type_decl
+    (83) declaration -> . var_decl
+    (84) declaration -> . func_decl
+    (85) declaration -> . import_decl
+    (106) statement -> . if_statement
+    (107) statement -> . for_statement
+    (108) statement -> . assignment_statement
+    (109) statement -> . return_statement
+    (35) type_lit -> . array_type
+    (36) type_lit -> . slice_type
+    (37) type_lit -> . struct_type
+    (38) type_lit -> . pointer_type
+    (39) type_lit -> . function_type
+    (40) type_lit -> . interface_type
+    (41) type_lit -> . map_type
+    (42) type_lit -> . channel_type
+    (87) const_decl -> . CONST const_spec
+    (88) const_decl -> . CONST LPAREN const_spec RPAREN
+    (91) type_decl -> . TYPE type_spec
+    (92) type_decl -> . TYPE LPAREN type_spec RPAREN
+    (97) var_decl -> . VAR var_spec
+    (98) var_decl -> . VAR LPAREN var_spec RPAREN
+    (102) func_decl -> . FUNC ID signature
+    (103) func_decl -> . FUNC ID signature block
+    (104) import_decl -> . IMPORT string_lit
+    (105) import_decl -> . IMPORT LPAREN string_lit RPAREN
+    (112) if_statement -> . IF expression block
+    (113) if_statement -> . IF expression block ELSE block
+    (114) for_statement -> . FOR expression block
+    (115) for_statement -> . FOR for_clause block
+    (116) for_statement -> . FOR range_clause block
+    (118) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
+    (121) return_statement -> . RETURN expression_list
+    (44) array_type -> . LBRACKET expression RBRACKET type
+    (45) slice_type -> . LBRACKET RBRACKET type
+    (46) struct_type -> . STRUCT LBRACE RBRACE
+    (47) struct_type -> . STRUCT LBRACE field_decl RBRACE
+    (56) pointer_type -> . ASTERISKS type
+    (57) function_type -> . FUNC signature
+    (71) interface_type -> . INTERFACE LBRACE method_spec RBRACE
+    (76) map_type -> . MAP LBRACKET key_type RBRACKET type
+    (78) channel_type -> . CHAN type
+    (79) channel_type -> . CHAN CHANNEL_OPERATOR type
+    (80) channel_type -> . CHANNEL_OPERATOR CHAN type
+    (7) expression_list -> . expression
+    (8) expression_list -> . expression expression_list
+
+    INTEGER         shift and go to state 4
+    FLOAT           shift and go to state 5
+    STRING_LITERAL  shift and go to state 6
+    ID              shift and go to state 7
+    LPAREN          shift and go to state 8
+    NOT             shift and go to state 9
+    TYPE_BOOL       shift and go to state 15
+    TYPE_STRING     shift and go to state 16
+    TYPE_INT        shift and go to state 17
+    TYPE_INT8       shift and go to state 18
+    TYPE_INT16      shift and go to state 19
+    TYPE_INT32      shift and go to state 20
+    TYPE_INT64      shift and go to state 21
+    TYPE_UINT       shift and go to state 22
+    TYPE_UINT8      shift and go to state 23
+    TYPE_UINT16     shift and go to state 24
+    TYPE_UINT32     shift and go to state 25
+    TYPE_UINT64     shift and go to state 26
+    TYPE_UINTPTR    shift and go to state 27
+    TYPE_FLOAT32    shift and go to state 28
+    TYPE_FLOAT64    shift and go to state 29
+    TYPE_COMPLEX64  shift and go to state 30
+    TYPE_COMPLEX128 shift and go to state 31
+    CONST           shift and go to state 50
+    TYPE            shift and go to state 51
+    VAR             shift and go to state 52
+    FUNC            shift and go to state 53
+    IMPORT          shift and go to state 54
+    IF              shift and go to state 55
+    FOR             shift and go to state 56
+    RETURN          shift and go to state 57
+    LBRACKET        shift and go to state 58
+    STRUCT          shift and go to state 59
+    ASTERISKS       shift and go to state 60
+    INTERFACE       shift and go to state 61
+    MAP             shift and go to state 62
+    CHAN            shift and go to state 63
+    CHANNEL_OPERATOR shift and go to state 64
+
+    expression                     shift and go to state 206
     arithmetical_assignment        shift and go to state 10
     unary_assignment               shift and go to state 11
     type                           shift and go to state 12
@@ -13012,7 +13059,7 @@ state 186
     channel_type                   shift and go to state 49
     expression_list                shift and go to state 74
 
-state 187
+state 188
 
     (44) array_type -> LBRACKET expression RBRACKET type .
 
@@ -13068,7 +13115,7 @@ state 187
     COMMA           reduce using rule 44 (array_type -> LBRACKET expression RBRACKET type .)
 
 
-state 188
+state 189
 
     (47) struct_type -> STRUCT LBRACE field_decl RBRACE .
 
@@ -13124,7 +13171,7 @@ state 188
     COMMA           reduce using rule 47 (struct_type -> STRUCT LBRACE field_decl RBRACE .)
 
 
-state 189
+state 190
 
     (48) field_decl -> identifier_list type . string_lit
     (49) field_decl -> identifier_list type .
@@ -13133,16 +13180,16 @@ state 189
     RBRACE          reduce using rule 49 (field_decl -> identifier_list type .)
     STRING_LITERAL  shift and go to state 94
 
-    string_lit                     shift and go to state 205
+    string_lit                     shift and go to state 207
 
-state 190
+state 191
 
     (50) field_decl -> embedded_field string_lit .
 
     RBRACE          reduce using rule 50 (field_decl -> embedded_field string_lit .)
 
 
-state 191
+state 192
 
     (54) embedded_field -> ASTERISKS ID .
 
@@ -13150,7 +13197,7 @@ state 191
     RBRACE          reduce using rule 54 (embedded_field -> ASTERISKS ID .)
 
 
-state 192
+state 193
 
     (71) interface_type -> INTERFACE LBRACE method_spec RBRACE .
 
@@ -13206,14 +13253,14 @@ state 192
     COMMA           reduce using rule 71 (interface_type -> INTERFACE LBRACE method_spec RBRACE .)
 
 
-state 193
+state 194
 
     (72) method_spec -> method_name signature .
 
     RBRACE          reduce using rule 72 (method_spec -> method_name signature .)
 
 
-state 194
+state 195
 
     (76) map_type -> MAP LBRACKET key_type RBRACKET . type
     (18) type -> . TYPE_BOOL
@@ -13280,7 +13327,7 @@ state 194
     CHAN            shift and go to state 63
     CHANNEL_OPERATOR shift and go to state 64
 
-    type                           shift and go to state 206
+    type                           shift and go to state 208
     type_lit                       shift and go to state 32
     array_type                     shift and go to state 42
     slice_type                     shift and go to state 43
@@ -13291,7 +13338,7 @@ state 194
     map_type                       shift and go to state 48
     channel_type                   shift and go to state 49
 
-state 195
+state 196
 
     (80) channel_type -> CHANNEL_OPERATOR CHAN type .
     (78) channel_type -> CHAN type .
@@ -13449,10 +13496,10 @@ state 195
   ! COMMA           [ reduce using rule 80 (channel_type -> CHANNEL_OPERATOR CHAN type .) ]
 
 
-state 196
+state 197
 
     (90) const_spec -> identifier_list type NORMAL_ASSIGNMENT expression_list .
-    (117) assignment_statement -> expression_list . NORMAL_ASSIGNMENT expression_list
+    (118) assignment_statement -> expression_list . NORMAL_ASSIGNMENT expression_list
 
   ! shift/reduce conflict for NORMAL_ASSIGNMENT resolved as shift
     $end            reduce using rule 90 (const_spec -> identifier_list type NORMAL_ASSIGNMENT expression_list .)
@@ -13508,10 +13555,10 @@ state 196
   ! NORMAL_ASSIGNMENT [ reduce using rule 90 (const_spec -> identifier_list type NORMAL_ASSIGNMENT expression_list .) ]
 
 
-state 197
+state 198
 
     (100) var_spec -> identifier_list type NORMAL_ASSIGNMENT expression_list .
-    (117) assignment_statement -> expression_list . NORMAL_ASSIGNMENT expression_list
+    (118) assignment_statement -> expression_list . NORMAL_ASSIGNMENT expression_list
 
   ! shift/reduce conflict for NORMAL_ASSIGNMENT resolved as shift
     $end            reduce using rule 100 (var_spec -> identifier_list type NORMAL_ASSIGNMENT expression_list .)
@@ -13567,7 +13614,7 @@ state 197
   ! NORMAL_ASSIGNMENT [ reduce using rule 100 (var_spec -> identifier_list type NORMAL_ASSIGNMENT expression_list .) ]
 
 
-state 198
+state 199
 
     (62) result -> LPAREN type RPAREN .
 
@@ -13623,14 +13670,14 @@ state 198
     COMMA           reduce using rule 62 (result -> LPAREN type RPAREN .)
 
 
-state 199
+state 200
 
     (66) parameter_list -> parameter_decl COMMA parameter_list .
 
     RPAREN          reduce using rule 66 (parameter_list -> parameter_decl COMMA parameter_list .)
 
 
-state 200
+state 201
 
     (70) parameter_decl -> identifier_list ELLIPSIS type .
 
@@ -13638,10 +13685,66 @@ state 200
     RPAREN          reduce using rule 70 (parameter_decl -> identifier_list ELLIPSIS type .)
 
 
-state 201
+state 202
+
+    (113) if_statement -> IF expression block ELSE block .
+
+    ARITHMETIC_OPERATOR reduce using rule 113 (if_statement -> IF expression block ELSE block .)
+    OR              reduce using rule 113 (if_statement -> IF expression block ELSE block .)
+    AND             reduce using rule 113 (if_statement -> IF expression block ELSE block .)
+    COMPARISON_OPERATOR reduce using rule 113 (if_statement -> IF expression block ELSE block .)
+    INTEGER         reduce using rule 113 (if_statement -> IF expression block ELSE block .)
+    FLOAT           reduce using rule 113 (if_statement -> IF expression block ELSE block .)
+    STRING_LITERAL  reduce using rule 113 (if_statement -> IF expression block ELSE block .)
+    ID              reduce using rule 113 (if_statement -> IF expression block ELSE block .)
+    LPAREN          reduce using rule 113 (if_statement -> IF expression block ELSE block .)
+    NOT             reduce using rule 113 (if_statement -> IF expression block ELSE block .)
+    TYPE_BOOL       reduce using rule 113 (if_statement -> IF expression block ELSE block .)
+    TYPE_STRING     reduce using rule 113 (if_statement -> IF expression block ELSE block .)
+    TYPE_INT        reduce using rule 113 (if_statement -> IF expression block ELSE block .)
+    TYPE_INT8       reduce using rule 113 (if_statement -> IF expression block ELSE block .)
+    TYPE_INT16      reduce using rule 113 (if_statement -> IF expression block ELSE block .)
+    TYPE_INT32      reduce using rule 113 (if_statement -> IF expression block ELSE block .)
+    TYPE_INT64      reduce using rule 113 (if_statement -> IF expression block ELSE block .)
+    TYPE_UINT       reduce using rule 113 (if_statement -> IF expression block ELSE block .)
+    TYPE_UINT8      reduce using rule 113 (if_statement -> IF expression block ELSE block .)
+    TYPE_UINT16     reduce using rule 113 (if_statement -> IF expression block ELSE block .)
+    TYPE_UINT32     reduce using rule 113 (if_statement -> IF expression block ELSE block .)
+    TYPE_UINT64     reduce using rule 113 (if_statement -> IF expression block ELSE block .)
+    TYPE_UINTPTR    reduce using rule 113 (if_statement -> IF expression block ELSE block .)
+    TYPE_FLOAT32    reduce using rule 113 (if_statement -> IF expression block ELSE block .)
+    TYPE_FLOAT64    reduce using rule 113 (if_statement -> IF expression block ELSE block .)
+    TYPE_COMPLEX64  reduce using rule 113 (if_statement -> IF expression block ELSE block .)
+    TYPE_COMPLEX128 reduce using rule 113 (if_statement -> IF expression block ELSE block .)
+    CONST           reduce using rule 113 (if_statement -> IF expression block ELSE block .)
+    TYPE            reduce using rule 113 (if_statement -> IF expression block ELSE block .)
+    VAR             reduce using rule 113 (if_statement -> IF expression block ELSE block .)
+    FUNC            reduce using rule 113 (if_statement -> IF expression block ELSE block .)
+    IMPORT          reduce using rule 113 (if_statement -> IF expression block ELSE block .)
+    IF              reduce using rule 113 (if_statement -> IF expression block ELSE block .)
+    FOR             reduce using rule 113 (if_statement -> IF expression block ELSE block .)
+    RETURN          reduce using rule 113 (if_statement -> IF expression block ELSE block .)
+    LBRACKET        reduce using rule 113 (if_statement -> IF expression block ELSE block .)
+    STRUCT          reduce using rule 113 (if_statement -> IF expression block ELSE block .)
+    ASTERISKS       reduce using rule 113 (if_statement -> IF expression block ELSE block .)
+    INTERFACE       reduce using rule 113 (if_statement -> IF expression block ELSE block .)
+    MAP             reduce using rule 113 (if_statement -> IF expression block ELSE block .)
+    CHAN            reduce using rule 113 (if_statement -> IF expression block ELSE block .)
+    CHANNEL_OPERATOR reduce using rule 113 (if_statement -> IF expression block ELSE block .)
+    NORMAL_ASSIGNMENT reduce using rule 113 (if_statement -> IF expression block ELSE block .)
+    $end            reduce using rule 113 (if_statement -> IF expression block ELSE block .)
+    RPAREN          reduce using rule 113 (if_statement -> IF expression block ELSE block .)
+    LBRACE          reduce using rule 113 (if_statement -> IF expression block ELSE block .)
+    RBRACKET        reduce using rule 113 (if_statement -> IF expression block ELSE block .)
+    RBRACE          reduce using rule 113 (if_statement -> IF expression block ELSE block .)
+    SEMICOLON       reduce using rule 113 (if_statement -> IF expression block ELSE block .)
+
+
+state 203
 
     (111) block -> LBRACE expression_list RBRACE .
 
+    ELSE            reduce using rule 111 (block -> LBRACE expression_list RBRACE .)
     ARITHMETIC_OPERATOR reduce using rule 111 (block -> LBRACE expression_list RBRACE .)
     OR              reduce using rule 111 (block -> LBRACE expression_list RBRACE .)
     AND             reduce using rule 111 (block -> LBRACE expression_list RBRACE .)
@@ -13693,9 +13796,9 @@ state 201
     SEMICOLON       reduce using rule 111 (block -> LBRACE expression_list RBRACE .)
 
 
-state 202
+state 204
 
-    (116) for_clause -> assignment_statement SEMICOLON expression SEMICOLON . expression
+    (117) for_clause -> assignment_statement SEMICOLON expression SEMICOLON . expression
     (1) expression -> . INTEGER
     (2) expression -> . FLOAT
     (3) expression -> . STRING_LITERAL
@@ -13759,11 +13862,12 @@ state 202
     (104) import_decl -> . IMPORT string_lit
     (105) import_decl -> . IMPORT LPAREN string_lit RPAREN
     (112) if_statement -> . IF expression block
-    (113) for_statement -> . FOR expression block
-    (114) for_statement -> . FOR for_clause block
-    (115) for_statement -> . FOR range_clause block
-    (117) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
-    (120) return_statement -> . RETURN expression_list
+    (113) if_statement -> . IF expression block ELSE block
+    (114) for_statement -> . FOR expression block
+    (115) for_statement -> . FOR for_clause block
+    (116) for_statement -> . FOR range_clause block
+    (118) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
+    (121) return_statement -> . RETURN expression_list
     (44) array_type -> . LBRACKET expression RBRACKET type
     (45) slice_type -> . LBRACKET RBRACKET type
     (46) struct_type -> . STRUCT LBRACE RBRACE
@@ -13818,7 +13922,7 @@ state 202
     CHANNEL_OPERATOR shift and go to state 64
 
     assignment_statement           shift and go to state 40
-    expression                     shift and go to state 207
+    expression                     shift and go to state 209
     arithmetical_assignment        shift and go to state 10
     unary_assignment               shift and go to state 11
     type                           shift and go to state 12
@@ -13843,338 +13947,340 @@ state 202
     channel_type                   shift and go to state 49
     expression_list                shift and go to state 74
 
-state 203
-
-    (118) range_clause -> expression_list NORMAL_ASSIGNMENT RANGE expression .
-    (6) expression -> expression . ARITHMETIC_OPERATOR expression
-    (9) expression -> expression . OR expression
-    (10) expression -> expression . AND expression
-    (12) expression -> expression . COMPARISON_OPERATOR expression
-    (7) expression_list -> expression .
-    (8) expression_list -> expression . expression_list
-    (7) expression_list -> . expression
-    (8) expression_list -> . expression expression_list
-    (1) expression -> . INTEGER
-    (2) expression -> . FLOAT
-    (3) expression -> . STRING_LITERAL
-    (4) expression -> . ID
-    (5) expression -> . LPAREN expression RPAREN
-    (6) expression -> . expression ARITHMETIC_OPERATOR expression
-    (9) expression -> . expression OR expression
-    (10) expression -> . expression AND expression
-    (11) expression -> . NOT expression
-    (12) expression -> . expression COMPARISON_OPERATOR expression
-    (15) expression -> . arithmetical_assignment
-    (16) expression -> . unary_assignment
-    (17) expression -> . type
-    (86) expression -> . declaration
-    (110) expression -> . statement
-    (13) arithmetical_assignment -> . ID ARITHMETICAL_ASSIGNMENT expression
-    (14) unary_assignment -> . ID UNARY_ASSIGNMENT
-    (18) type -> . TYPE_BOOL
-    (19) type -> . TYPE_STRING
-    (20) type -> . TYPE_INT
-    (21) type -> . TYPE_INT8
-    (22) type -> . TYPE_INT16
-    (23) type -> . TYPE_INT32
-    (24) type -> . TYPE_INT64
-    (25) type -> . TYPE_UINT
-    (26) type -> . TYPE_UINT8
-    (27) type -> . TYPE_UINT16
-    (28) type -> . TYPE_UINT32
-    (29) type -> . TYPE_UINT64
-    (30) type -> . TYPE_UINTPTR
-    (31) type -> . TYPE_FLOAT32
-    (32) type -> . TYPE_FLOAT64
-    (33) type -> . TYPE_COMPLEX64
-    (34) type -> . TYPE_COMPLEX128
-    (43) type -> . type_lit
-    (81) declaration -> . const_decl
-    (82) declaration -> . type_decl
-    (83) declaration -> . var_decl
-    (84) declaration -> . func_decl
-    (85) declaration -> . import_decl
-    (106) statement -> . if_statement
-    (107) statement -> . for_statement
-    (108) statement -> . assignment_statement
-    (109) statement -> . return_statement
-    (35) type_lit -> . array_type
-    (36) type_lit -> . slice_type
-    (37) type_lit -> . struct_type
-    (38) type_lit -> . pointer_type
-    (39) type_lit -> . function_type
-    (40) type_lit -> . interface_type
-    (41) type_lit -> . map_type
-    (42) type_lit -> . channel_type
-    (87) const_decl -> . CONST const_spec
-    (88) const_decl -> . CONST LPAREN const_spec RPAREN
-    (91) type_decl -> . TYPE type_spec
-    (92) type_decl -> . TYPE LPAREN type_spec RPAREN
-    (97) var_decl -> . VAR var_spec
-    (98) var_decl -> . VAR LPAREN var_spec RPAREN
-    (102) func_decl -> . FUNC ID signature
-    (103) func_decl -> . FUNC ID signature block
-    (104) import_decl -> . IMPORT string_lit
-    (105) import_decl -> . IMPORT LPAREN string_lit RPAREN
-    (112) if_statement -> . IF expression block
-    (113) for_statement -> . FOR expression block
-    (114) for_statement -> . FOR for_clause block
-    (115) for_statement -> . FOR range_clause block
-    (117) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
-    (120) return_statement -> . RETURN expression_list
-    (44) array_type -> . LBRACKET expression RBRACKET type
-    (45) slice_type -> . LBRACKET RBRACKET type
-    (46) struct_type -> . STRUCT LBRACE RBRACE
-    (47) struct_type -> . STRUCT LBRACE field_decl RBRACE
-    (56) pointer_type -> . ASTERISKS type
-    (57) function_type -> . FUNC signature
-    (71) interface_type -> . INTERFACE LBRACE method_spec RBRACE
-    (76) map_type -> . MAP LBRACKET key_type RBRACKET type
-    (78) channel_type -> . CHAN type
-    (79) channel_type -> . CHAN CHANNEL_OPERATOR type
-    (80) channel_type -> . CHANNEL_OPERATOR CHAN type
-
-    LBRACE          reduce using rule 118 (range_clause -> expression_list NORMAL_ASSIGNMENT RANGE expression .)
-    ARITHMETIC_OPERATOR shift and go to state 67
-    OR              shift and go to state 68
-    AND             shift and go to state 69
-    COMPARISON_OPERATOR shift and go to state 70
-    NORMAL_ASSIGNMENT reduce using rule 7 (expression_list -> expression .)
-    INTEGER         shift and go to state 4
-    FLOAT           shift and go to state 5
-    STRING_LITERAL  shift and go to state 6
-    ID              shift and go to state 7
-    LPAREN          shift and go to state 8
-    NOT             shift and go to state 9
-    TYPE_BOOL       shift and go to state 15
-    TYPE_STRING     shift and go to state 16
-    TYPE_INT        shift and go to state 17
-    TYPE_INT8       shift and go to state 18
-    TYPE_INT16      shift and go to state 19
-    TYPE_INT32      shift and go to state 20
-    TYPE_INT64      shift and go to state 21
-    TYPE_UINT       shift and go to state 22
-    TYPE_UINT8      shift and go to state 23
-    TYPE_UINT16     shift and go to state 24
-    TYPE_UINT32     shift and go to state 25
-    TYPE_UINT64     shift and go to state 26
-    TYPE_UINTPTR    shift and go to state 27
-    TYPE_FLOAT32    shift and go to state 28
-    TYPE_FLOAT64    shift and go to state 29
-    TYPE_COMPLEX64  shift and go to state 30
-    TYPE_COMPLEX128 shift and go to state 31
-    CONST           shift and go to state 50
-    TYPE            shift and go to state 51
-    VAR             shift and go to state 52
-    FUNC            shift and go to state 53
-    IMPORT          shift and go to state 54
-    IF              shift and go to state 55
-    FOR             shift and go to state 56
-    RETURN          shift and go to state 57
-    LBRACKET        shift and go to state 58
-    STRUCT          shift and go to state 59
-    ASTERISKS       shift and go to state 60
-    INTERFACE       shift and go to state 61
-    MAP             shift and go to state 62
-    CHAN            shift and go to state 63
-    CHANNEL_OPERATOR shift and go to state 64
-
-    expression_list                shift and go to state 66
-    expression                     shift and go to state 3
-    arithmetical_assignment        shift and go to state 10
-    unary_assignment               shift and go to state 11
-    type                           shift and go to state 12
-    declaration                    shift and go to state 13
-    statement                      shift and go to state 14
-    type_lit                       shift and go to state 32
-    const_decl                     shift and go to state 33
-    type_decl                      shift and go to state 34
-    var_decl                       shift and go to state 35
-    func_decl                      shift and go to state 36
-    import_decl                    shift and go to state 37
-    if_statement                   shift and go to state 38
-    for_statement                  shift and go to state 39
-    assignment_statement           shift and go to state 40
-    return_statement               shift and go to state 41
-    array_type                     shift and go to state 42
-    slice_type                     shift and go to state 43
-    struct_type                    shift and go to state 44
-    pointer_type                   shift and go to state 45
-    function_type                  shift and go to state 46
-    interface_type                 shift and go to state 47
-    map_type                       shift and go to state 48
-    channel_type                   shift and go to state 49
-
-state 204
-
-    (119) range_clause -> identifier_list NORMAL_ASSIGNMENT RANGE expression .
-    (6) expression -> expression . ARITHMETIC_OPERATOR expression
-    (9) expression -> expression . OR expression
-    (10) expression -> expression . AND expression
-    (12) expression -> expression . COMPARISON_OPERATOR expression
-    (7) expression_list -> expression .
-    (8) expression_list -> expression . expression_list
-    (7) expression_list -> . expression
-    (8) expression_list -> . expression expression_list
-    (1) expression -> . INTEGER
-    (2) expression -> . FLOAT
-    (3) expression -> . STRING_LITERAL
-    (4) expression -> . ID
-    (5) expression -> . LPAREN expression RPAREN
-    (6) expression -> . expression ARITHMETIC_OPERATOR expression
-    (9) expression -> . expression OR expression
-    (10) expression -> . expression AND expression
-    (11) expression -> . NOT expression
-    (12) expression -> . expression COMPARISON_OPERATOR expression
-    (15) expression -> . arithmetical_assignment
-    (16) expression -> . unary_assignment
-    (17) expression -> . type
-    (86) expression -> . declaration
-    (110) expression -> . statement
-    (13) arithmetical_assignment -> . ID ARITHMETICAL_ASSIGNMENT expression
-    (14) unary_assignment -> . ID UNARY_ASSIGNMENT
-    (18) type -> . TYPE_BOOL
-    (19) type -> . TYPE_STRING
-    (20) type -> . TYPE_INT
-    (21) type -> . TYPE_INT8
-    (22) type -> . TYPE_INT16
-    (23) type -> . TYPE_INT32
-    (24) type -> . TYPE_INT64
-    (25) type -> . TYPE_UINT
-    (26) type -> . TYPE_UINT8
-    (27) type -> . TYPE_UINT16
-    (28) type -> . TYPE_UINT32
-    (29) type -> . TYPE_UINT64
-    (30) type -> . TYPE_UINTPTR
-    (31) type -> . TYPE_FLOAT32
-    (32) type -> . TYPE_FLOAT64
-    (33) type -> . TYPE_COMPLEX64
-    (34) type -> . TYPE_COMPLEX128
-    (43) type -> . type_lit
-    (81) declaration -> . const_decl
-    (82) declaration -> . type_decl
-    (83) declaration -> . var_decl
-    (84) declaration -> . func_decl
-    (85) declaration -> . import_decl
-    (106) statement -> . if_statement
-    (107) statement -> . for_statement
-    (108) statement -> . assignment_statement
-    (109) statement -> . return_statement
-    (35) type_lit -> . array_type
-    (36) type_lit -> . slice_type
-    (37) type_lit -> . struct_type
-    (38) type_lit -> . pointer_type
-    (39) type_lit -> . function_type
-    (40) type_lit -> . interface_type
-    (41) type_lit -> . map_type
-    (42) type_lit -> . channel_type
-    (87) const_decl -> . CONST const_spec
-    (88) const_decl -> . CONST LPAREN const_spec RPAREN
-    (91) type_decl -> . TYPE type_spec
-    (92) type_decl -> . TYPE LPAREN type_spec RPAREN
-    (97) var_decl -> . VAR var_spec
-    (98) var_decl -> . VAR LPAREN var_spec RPAREN
-    (102) func_decl -> . FUNC ID signature
-    (103) func_decl -> . FUNC ID signature block
-    (104) import_decl -> . IMPORT string_lit
-    (105) import_decl -> . IMPORT LPAREN string_lit RPAREN
-    (112) if_statement -> . IF expression block
-    (113) for_statement -> . FOR expression block
-    (114) for_statement -> . FOR for_clause block
-    (115) for_statement -> . FOR range_clause block
-    (117) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
-    (120) return_statement -> . RETURN expression_list
-    (44) array_type -> . LBRACKET expression RBRACKET type
-    (45) slice_type -> . LBRACKET RBRACKET type
-    (46) struct_type -> . STRUCT LBRACE RBRACE
-    (47) struct_type -> . STRUCT LBRACE field_decl RBRACE
-    (56) pointer_type -> . ASTERISKS type
-    (57) function_type -> . FUNC signature
-    (71) interface_type -> . INTERFACE LBRACE method_spec RBRACE
-    (76) map_type -> . MAP LBRACKET key_type RBRACKET type
-    (78) channel_type -> . CHAN type
-    (79) channel_type -> . CHAN CHANNEL_OPERATOR type
-    (80) channel_type -> . CHANNEL_OPERATOR CHAN type
-
-    LBRACE          reduce using rule 119 (range_clause -> identifier_list NORMAL_ASSIGNMENT RANGE expression .)
-    ARITHMETIC_OPERATOR shift and go to state 67
-    OR              shift and go to state 68
-    AND             shift and go to state 69
-    COMPARISON_OPERATOR shift and go to state 70
-    NORMAL_ASSIGNMENT reduce using rule 7 (expression_list -> expression .)
-    INTEGER         shift and go to state 4
-    FLOAT           shift and go to state 5
-    STRING_LITERAL  shift and go to state 6
-    ID              shift and go to state 7
-    LPAREN          shift and go to state 8
-    NOT             shift and go to state 9
-    TYPE_BOOL       shift and go to state 15
-    TYPE_STRING     shift and go to state 16
-    TYPE_INT        shift and go to state 17
-    TYPE_INT8       shift and go to state 18
-    TYPE_INT16      shift and go to state 19
-    TYPE_INT32      shift and go to state 20
-    TYPE_INT64      shift and go to state 21
-    TYPE_UINT       shift and go to state 22
-    TYPE_UINT8      shift and go to state 23
-    TYPE_UINT16     shift and go to state 24
-    TYPE_UINT32     shift and go to state 25
-    TYPE_UINT64     shift and go to state 26
-    TYPE_UINTPTR    shift and go to state 27
-    TYPE_FLOAT32    shift and go to state 28
-    TYPE_FLOAT64    shift and go to state 29
-    TYPE_COMPLEX64  shift and go to state 30
-    TYPE_COMPLEX128 shift and go to state 31
-    CONST           shift and go to state 50
-    TYPE            shift and go to state 51
-    VAR             shift and go to state 52
-    FUNC            shift and go to state 53
-    IMPORT          shift and go to state 54
-    IF              shift and go to state 55
-    FOR             shift and go to state 56
-    RETURN          shift and go to state 57
-    LBRACKET        shift and go to state 58
-    STRUCT          shift and go to state 59
-    ASTERISKS       shift and go to state 60
-    INTERFACE       shift and go to state 61
-    MAP             shift and go to state 62
-    CHAN            shift and go to state 63
-    CHANNEL_OPERATOR shift and go to state 64
-
-    expression                     shift and go to state 3
-    expression_list                shift and go to state 66
-    arithmetical_assignment        shift and go to state 10
-    unary_assignment               shift and go to state 11
-    type                           shift and go to state 12
-    declaration                    shift and go to state 13
-    statement                      shift and go to state 14
-    type_lit                       shift and go to state 32
-    const_decl                     shift and go to state 33
-    type_decl                      shift and go to state 34
-    var_decl                       shift and go to state 35
-    func_decl                      shift and go to state 36
-    import_decl                    shift and go to state 37
-    if_statement                   shift and go to state 38
-    for_statement                  shift and go to state 39
-    assignment_statement           shift and go to state 40
-    return_statement               shift and go to state 41
-    array_type                     shift and go to state 42
-    slice_type                     shift and go to state 43
-    struct_type                    shift and go to state 44
-    pointer_type                   shift and go to state 45
-    function_type                  shift and go to state 46
-    interface_type                 shift and go to state 47
-    map_type                       shift and go to state 48
-    channel_type                   shift and go to state 49
-
 state 205
+
+    (119) range_clause -> expression_list NORMAL_ASSIGNMENT RANGE expression .
+    (6) expression -> expression . ARITHMETIC_OPERATOR expression
+    (9) expression -> expression . OR expression
+    (10) expression -> expression . AND expression
+    (12) expression -> expression . COMPARISON_OPERATOR expression
+    (7) expression_list -> expression .
+    (8) expression_list -> expression . expression_list
+    (7) expression_list -> . expression
+    (8) expression_list -> . expression expression_list
+    (1) expression -> . INTEGER
+    (2) expression -> . FLOAT
+    (3) expression -> . STRING_LITERAL
+    (4) expression -> . ID
+    (5) expression -> . LPAREN expression RPAREN
+    (6) expression -> . expression ARITHMETIC_OPERATOR expression
+    (9) expression -> . expression OR expression
+    (10) expression -> . expression AND expression
+    (11) expression -> . NOT expression
+    (12) expression -> . expression COMPARISON_OPERATOR expression
+    (15) expression -> . arithmetical_assignment
+    (16) expression -> . unary_assignment
+    (17) expression -> . type
+    (86) expression -> . declaration
+    (110) expression -> . statement
+    (13) arithmetical_assignment -> . ID ARITHMETICAL_ASSIGNMENT expression
+    (14) unary_assignment -> . ID UNARY_ASSIGNMENT
+    (18) type -> . TYPE_BOOL
+    (19) type -> . TYPE_STRING
+    (20) type -> . TYPE_INT
+    (21) type -> . TYPE_INT8
+    (22) type -> . TYPE_INT16
+    (23) type -> . TYPE_INT32
+    (24) type -> . TYPE_INT64
+    (25) type -> . TYPE_UINT
+    (26) type -> . TYPE_UINT8
+    (27) type -> . TYPE_UINT16
+    (28) type -> . TYPE_UINT32
+    (29) type -> . TYPE_UINT64
+    (30) type -> . TYPE_UINTPTR
+    (31) type -> . TYPE_FLOAT32
+    (32) type -> . TYPE_FLOAT64
+    (33) type -> . TYPE_COMPLEX64
+    (34) type -> . TYPE_COMPLEX128
+    (43) type -> . type_lit
+    (81) declaration -> . const_decl
+    (82) declaration -> . type_decl
+    (83) declaration -> . var_decl
+    (84) declaration -> . func_decl
+    (85) declaration -> . import_decl
+    (106) statement -> . if_statement
+    (107) statement -> . for_statement
+    (108) statement -> . assignment_statement
+    (109) statement -> . return_statement
+    (35) type_lit -> . array_type
+    (36) type_lit -> . slice_type
+    (37) type_lit -> . struct_type
+    (38) type_lit -> . pointer_type
+    (39) type_lit -> . function_type
+    (40) type_lit -> . interface_type
+    (41) type_lit -> . map_type
+    (42) type_lit -> . channel_type
+    (87) const_decl -> . CONST const_spec
+    (88) const_decl -> . CONST LPAREN const_spec RPAREN
+    (91) type_decl -> . TYPE type_spec
+    (92) type_decl -> . TYPE LPAREN type_spec RPAREN
+    (97) var_decl -> . VAR var_spec
+    (98) var_decl -> . VAR LPAREN var_spec RPAREN
+    (102) func_decl -> . FUNC ID signature
+    (103) func_decl -> . FUNC ID signature block
+    (104) import_decl -> . IMPORT string_lit
+    (105) import_decl -> . IMPORT LPAREN string_lit RPAREN
+    (112) if_statement -> . IF expression block
+    (113) if_statement -> . IF expression block ELSE block
+    (114) for_statement -> . FOR expression block
+    (115) for_statement -> . FOR for_clause block
+    (116) for_statement -> . FOR range_clause block
+    (118) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
+    (121) return_statement -> . RETURN expression_list
+    (44) array_type -> . LBRACKET expression RBRACKET type
+    (45) slice_type -> . LBRACKET RBRACKET type
+    (46) struct_type -> . STRUCT LBRACE RBRACE
+    (47) struct_type -> . STRUCT LBRACE field_decl RBRACE
+    (56) pointer_type -> . ASTERISKS type
+    (57) function_type -> . FUNC signature
+    (71) interface_type -> . INTERFACE LBRACE method_spec RBRACE
+    (76) map_type -> . MAP LBRACKET key_type RBRACKET type
+    (78) channel_type -> . CHAN type
+    (79) channel_type -> . CHAN CHANNEL_OPERATOR type
+    (80) channel_type -> . CHANNEL_OPERATOR CHAN type
+
+    LBRACE          reduce using rule 119 (range_clause -> expression_list NORMAL_ASSIGNMENT RANGE expression .)
+    ARITHMETIC_OPERATOR shift and go to state 67
+    OR              shift and go to state 68
+    AND             shift and go to state 69
+    COMPARISON_OPERATOR shift and go to state 70
+    NORMAL_ASSIGNMENT reduce using rule 7 (expression_list -> expression .)
+    INTEGER         shift and go to state 4
+    FLOAT           shift and go to state 5
+    STRING_LITERAL  shift and go to state 6
+    ID              shift and go to state 7
+    LPAREN          shift and go to state 8
+    NOT             shift and go to state 9
+    TYPE_BOOL       shift and go to state 15
+    TYPE_STRING     shift and go to state 16
+    TYPE_INT        shift and go to state 17
+    TYPE_INT8       shift and go to state 18
+    TYPE_INT16      shift and go to state 19
+    TYPE_INT32      shift and go to state 20
+    TYPE_INT64      shift and go to state 21
+    TYPE_UINT       shift and go to state 22
+    TYPE_UINT8      shift and go to state 23
+    TYPE_UINT16     shift and go to state 24
+    TYPE_UINT32     shift and go to state 25
+    TYPE_UINT64     shift and go to state 26
+    TYPE_UINTPTR    shift and go to state 27
+    TYPE_FLOAT32    shift and go to state 28
+    TYPE_FLOAT64    shift and go to state 29
+    TYPE_COMPLEX64  shift and go to state 30
+    TYPE_COMPLEX128 shift and go to state 31
+    CONST           shift and go to state 50
+    TYPE            shift and go to state 51
+    VAR             shift and go to state 52
+    FUNC            shift and go to state 53
+    IMPORT          shift and go to state 54
+    IF              shift and go to state 55
+    FOR             shift and go to state 56
+    RETURN          shift and go to state 57
+    LBRACKET        shift and go to state 58
+    STRUCT          shift and go to state 59
+    ASTERISKS       shift and go to state 60
+    INTERFACE       shift and go to state 61
+    MAP             shift and go to state 62
+    CHAN            shift and go to state 63
+    CHANNEL_OPERATOR shift and go to state 64
+
+    expression_list                shift and go to state 66
+    expression                     shift and go to state 3
+    arithmetical_assignment        shift and go to state 10
+    unary_assignment               shift and go to state 11
+    type                           shift and go to state 12
+    declaration                    shift and go to state 13
+    statement                      shift and go to state 14
+    type_lit                       shift and go to state 32
+    const_decl                     shift and go to state 33
+    type_decl                      shift and go to state 34
+    var_decl                       shift and go to state 35
+    func_decl                      shift and go to state 36
+    import_decl                    shift and go to state 37
+    if_statement                   shift and go to state 38
+    for_statement                  shift and go to state 39
+    assignment_statement           shift and go to state 40
+    return_statement               shift and go to state 41
+    array_type                     shift and go to state 42
+    slice_type                     shift and go to state 43
+    struct_type                    shift and go to state 44
+    pointer_type                   shift and go to state 45
+    function_type                  shift and go to state 46
+    interface_type                 shift and go to state 47
+    map_type                       shift and go to state 48
+    channel_type                   shift and go to state 49
+
+state 206
+
+    (120) range_clause -> identifier_list NORMAL_ASSIGNMENT RANGE expression .
+    (6) expression -> expression . ARITHMETIC_OPERATOR expression
+    (9) expression -> expression . OR expression
+    (10) expression -> expression . AND expression
+    (12) expression -> expression . COMPARISON_OPERATOR expression
+    (7) expression_list -> expression .
+    (8) expression_list -> expression . expression_list
+    (7) expression_list -> . expression
+    (8) expression_list -> . expression expression_list
+    (1) expression -> . INTEGER
+    (2) expression -> . FLOAT
+    (3) expression -> . STRING_LITERAL
+    (4) expression -> . ID
+    (5) expression -> . LPAREN expression RPAREN
+    (6) expression -> . expression ARITHMETIC_OPERATOR expression
+    (9) expression -> . expression OR expression
+    (10) expression -> . expression AND expression
+    (11) expression -> . NOT expression
+    (12) expression -> . expression COMPARISON_OPERATOR expression
+    (15) expression -> . arithmetical_assignment
+    (16) expression -> . unary_assignment
+    (17) expression -> . type
+    (86) expression -> . declaration
+    (110) expression -> . statement
+    (13) arithmetical_assignment -> . ID ARITHMETICAL_ASSIGNMENT expression
+    (14) unary_assignment -> . ID UNARY_ASSIGNMENT
+    (18) type -> . TYPE_BOOL
+    (19) type -> . TYPE_STRING
+    (20) type -> . TYPE_INT
+    (21) type -> . TYPE_INT8
+    (22) type -> . TYPE_INT16
+    (23) type -> . TYPE_INT32
+    (24) type -> . TYPE_INT64
+    (25) type -> . TYPE_UINT
+    (26) type -> . TYPE_UINT8
+    (27) type -> . TYPE_UINT16
+    (28) type -> . TYPE_UINT32
+    (29) type -> . TYPE_UINT64
+    (30) type -> . TYPE_UINTPTR
+    (31) type -> . TYPE_FLOAT32
+    (32) type -> . TYPE_FLOAT64
+    (33) type -> . TYPE_COMPLEX64
+    (34) type -> . TYPE_COMPLEX128
+    (43) type -> . type_lit
+    (81) declaration -> . const_decl
+    (82) declaration -> . type_decl
+    (83) declaration -> . var_decl
+    (84) declaration -> . func_decl
+    (85) declaration -> . import_decl
+    (106) statement -> . if_statement
+    (107) statement -> . for_statement
+    (108) statement -> . assignment_statement
+    (109) statement -> . return_statement
+    (35) type_lit -> . array_type
+    (36) type_lit -> . slice_type
+    (37) type_lit -> . struct_type
+    (38) type_lit -> . pointer_type
+    (39) type_lit -> . function_type
+    (40) type_lit -> . interface_type
+    (41) type_lit -> . map_type
+    (42) type_lit -> . channel_type
+    (87) const_decl -> . CONST const_spec
+    (88) const_decl -> . CONST LPAREN const_spec RPAREN
+    (91) type_decl -> . TYPE type_spec
+    (92) type_decl -> . TYPE LPAREN type_spec RPAREN
+    (97) var_decl -> . VAR var_spec
+    (98) var_decl -> . VAR LPAREN var_spec RPAREN
+    (102) func_decl -> . FUNC ID signature
+    (103) func_decl -> . FUNC ID signature block
+    (104) import_decl -> . IMPORT string_lit
+    (105) import_decl -> . IMPORT LPAREN string_lit RPAREN
+    (112) if_statement -> . IF expression block
+    (113) if_statement -> . IF expression block ELSE block
+    (114) for_statement -> . FOR expression block
+    (115) for_statement -> . FOR for_clause block
+    (116) for_statement -> . FOR range_clause block
+    (118) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
+    (121) return_statement -> . RETURN expression_list
+    (44) array_type -> . LBRACKET expression RBRACKET type
+    (45) slice_type -> . LBRACKET RBRACKET type
+    (46) struct_type -> . STRUCT LBRACE RBRACE
+    (47) struct_type -> . STRUCT LBRACE field_decl RBRACE
+    (56) pointer_type -> . ASTERISKS type
+    (57) function_type -> . FUNC signature
+    (71) interface_type -> . INTERFACE LBRACE method_spec RBRACE
+    (76) map_type -> . MAP LBRACKET key_type RBRACKET type
+    (78) channel_type -> . CHAN type
+    (79) channel_type -> . CHAN CHANNEL_OPERATOR type
+    (80) channel_type -> . CHANNEL_OPERATOR CHAN type
+
+    LBRACE          reduce using rule 120 (range_clause -> identifier_list NORMAL_ASSIGNMENT RANGE expression .)
+    ARITHMETIC_OPERATOR shift and go to state 67
+    OR              shift and go to state 68
+    AND             shift and go to state 69
+    COMPARISON_OPERATOR shift and go to state 70
+    NORMAL_ASSIGNMENT reduce using rule 7 (expression_list -> expression .)
+    INTEGER         shift and go to state 4
+    FLOAT           shift and go to state 5
+    STRING_LITERAL  shift and go to state 6
+    ID              shift and go to state 7
+    LPAREN          shift and go to state 8
+    NOT             shift and go to state 9
+    TYPE_BOOL       shift and go to state 15
+    TYPE_STRING     shift and go to state 16
+    TYPE_INT        shift and go to state 17
+    TYPE_INT8       shift and go to state 18
+    TYPE_INT16      shift and go to state 19
+    TYPE_INT32      shift and go to state 20
+    TYPE_INT64      shift and go to state 21
+    TYPE_UINT       shift and go to state 22
+    TYPE_UINT8      shift and go to state 23
+    TYPE_UINT16     shift and go to state 24
+    TYPE_UINT32     shift and go to state 25
+    TYPE_UINT64     shift and go to state 26
+    TYPE_UINTPTR    shift and go to state 27
+    TYPE_FLOAT32    shift and go to state 28
+    TYPE_FLOAT64    shift and go to state 29
+    TYPE_COMPLEX64  shift and go to state 30
+    TYPE_COMPLEX128 shift and go to state 31
+    CONST           shift and go to state 50
+    TYPE            shift and go to state 51
+    VAR             shift and go to state 52
+    FUNC            shift and go to state 53
+    IMPORT          shift and go to state 54
+    IF              shift and go to state 55
+    FOR             shift and go to state 56
+    RETURN          shift and go to state 57
+    LBRACKET        shift and go to state 58
+    STRUCT          shift and go to state 59
+    ASTERISKS       shift and go to state 60
+    INTERFACE       shift and go to state 61
+    MAP             shift and go to state 62
+    CHAN            shift and go to state 63
+    CHANNEL_OPERATOR shift and go to state 64
+
+    expression                     shift and go to state 3
+    expression_list                shift and go to state 66
+    arithmetical_assignment        shift and go to state 10
+    unary_assignment               shift and go to state 11
+    type                           shift and go to state 12
+    declaration                    shift and go to state 13
+    statement                      shift and go to state 14
+    type_lit                       shift and go to state 32
+    const_decl                     shift and go to state 33
+    type_decl                      shift and go to state 34
+    var_decl                       shift and go to state 35
+    func_decl                      shift and go to state 36
+    import_decl                    shift and go to state 37
+    if_statement                   shift and go to state 38
+    for_statement                  shift and go to state 39
+    assignment_statement           shift and go to state 40
+    return_statement               shift and go to state 41
+    array_type                     shift and go to state 42
+    slice_type                     shift and go to state 43
+    struct_type                    shift and go to state 44
+    pointer_type                   shift and go to state 45
+    function_type                  shift and go to state 46
+    interface_type                 shift and go to state 47
+    map_type                       shift and go to state 48
+    channel_type                   shift and go to state 49
+
+state 207
 
     (48) field_decl -> identifier_list type string_lit .
 
     RBRACE          reduce using rule 48 (field_decl -> identifier_list type string_lit .)
 
 
-state 206
+state 208
 
     (76) map_type -> MAP LBRACKET key_type RBRACKET type .
 
@@ -14230,9 +14336,9 @@ state 206
     COMMA           reduce using rule 76 (map_type -> MAP LBRACKET key_type RBRACKET type .)
 
 
-state 207
+state 209
 
-    (116) for_clause -> assignment_statement SEMICOLON expression SEMICOLON expression .
+    (117) for_clause -> assignment_statement SEMICOLON expression SEMICOLON expression .
     (6) expression -> expression . ARITHMETIC_OPERATOR expression
     (9) expression -> expression . OR expression
     (10) expression -> expression . AND expression
@@ -14304,11 +14410,12 @@ state 207
     (104) import_decl -> . IMPORT string_lit
     (105) import_decl -> . IMPORT LPAREN string_lit RPAREN
     (112) if_statement -> . IF expression block
-    (113) for_statement -> . FOR expression block
-    (114) for_statement -> . FOR for_clause block
-    (115) for_statement -> . FOR range_clause block
-    (117) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
-    (120) return_statement -> . RETURN expression_list
+    (113) if_statement -> . IF expression block ELSE block
+    (114) for_statement -> . FOR expression block
+    (115) for_statement -> . FOR for_clause block
+    (116) for_statement -> . FOR range_clause block
+    (118) assignment_statement -> . expression_list NORMAL_ASSIGNMENT expression_list
+    (121) return_statement -> . RETURN expression_list
     (44) array_type -> . LBRACKET expression RBRACKET type
     (45) slice_type -> . LBRACKET RBRACKET type
     (46) struct_type -> . STRUCT LBRACE RBRACE
@@ -14321,7 +14428,7 @@ state 207
     (79) channel_type -> . CHAN CHANNEL_OPERATOR type
     (80) channel_type -> . CHANNEL_OPERATOR CHAN type
 
-    LBRACE          reduce using rule 116 (for_clause -> assignment_statement SEMICOLON expression SEMICOLON expression .)
+    LBRACE          reduce using rule 117 (for_clause -> assignment_statement SEMICOLON expression SEMICOLON expression .)
     ARITHMETIC_OPERATOR shift and go to state 67
     OR              shift and go to state 68
     AND             shift and go to state 69
@@ -14722,8 +14829,8 @@ WARNING: shift/reduce conflict for NORMAL_ASSIGNMENT in state 129 resolved as sh
 WARNING: shift/reduce conflict for LBRACE in state 131 resolved as shift
 WARNING: shift/reduce conflict for NORMAL_ASSIGNMENT in state 167 resolved as shift
 WARNING: shift/reduce conflict for NORMAL_ASSIGNMENT in state 174 resolved as shift
-WARNING: shift/reduce conflict for NORMAL_ASSIGNMENT in state 196 resolved as shift
 WARNING: shift/reduce conflict for NORMAL_ASSIGNMENT in state 197 resolved as shift
+WARNING: shift/reduce conflict for NORMAL_ASSIGNMENT in state 198 resolved as shift
 WARNING: reduce/reduce conflict in state 75 resolved using rule (expression_list -> expression)
 WARNING: rejected rule (expression -> NOT expression) in state 75
 WARNING: reduce/reduce conflict in state 99 resolved using rule (expression -> ID)
@@ -14738,5 +14845,5 @@ WARNING: reduce/reduce conflict in state 118 resolved using rule (expression_lis
 WARNING: rejected rule (expression -> expression COMPARISON_OPERATOR expression) in state 118
 WARNING: reduce/reduce conflict in state 119 resolved using rule (expression_list -> expression)
 WARNING: rejected rule (arithmetical_assignment -> ID ARITHMETICAL_ASSIGNMENT expression) in state 119
-WARNING: reduce/reduce conflict in state 195 resolved using rule (channel_type -> CHAN type)
-WARNING: rejected rule (channel_type -> CHANNEL_OPERATOR CHAN type) in state 195
+WARNING: reduce/reduce conflict in state 196 resolved using rule (channel_type -> CHAN type)
+WARNING: rejected rule (channel_type -> CHANNEL_OPERATOR CHAN type) in state 196

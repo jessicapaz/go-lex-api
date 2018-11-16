@@ -4,14 +4,20 @@ from rest_framework import status
 from rest_framework.response import Response
 
 from rest_framework.views import APIView
+from rest_framework.generics import ListCreateAPIView
 
 from core.lexical import get_data
 from core.syntax_analysis import get_errors
+from core.models import Code
+from core.serializers import CodeSerializer
 
-class CodeApiView(APIView):
-    
+class CodeApiView(ListCreateAPIView):
+    queryset = Code.objects.all()
+    serializer_class = CodeSerializer
+
     def post(self, request, format=None):
         data = request.data.get("code")
+        data = data.replace("\r", "")
         lex = get_data(data)
         syntax_errors = get_errors(data)
         response_data = []

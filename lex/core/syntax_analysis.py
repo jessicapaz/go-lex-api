@@ -307,7 +307,9 @@ def p_block(p):
 
 def p_if_statement(p):
     '''if_statement : IF expression block
+                    | IF expression block ELSE block
     '''
+
 
 def p_for_statement(p):
     '''for_statement : FOR expression block
@@ -337,7 +339,7 @@ def p_program(p):
     '''
 
 def p_error(p):
-    print(f"Error in line {p.lineno}")
+    print(f"{p.type} : {p.lineno}|{p.lexpos};")
 
 parser = yacc.yacc(start="program")
 
