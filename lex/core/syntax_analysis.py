@@ -1,7 +1,19 @@
-import ply.yacc as yacc
-from lexical import tokens
+import core.ply.yacc as yacc
+from core.lexical import tokens
 
 
+    
+def p_expression(p):
+    '''expression : INTEGER
+                  | FLOAT
+                  | STRING_LITERAL
+                  | ID
+                  | LPAREN expression RPAREN
+    '''
+    if p[1] == '(' and p[3] == ')':
+        p[0] = p[2]
+    else:
+        p[0] = p[1]
 
 def p_binary_operators(p):
     '''expression : expression ARITHMETIC_OPERATOR expression
@@ -16,18 +28,6 @@ def p_binary_operators(p):
         # p[0] = p[1] * p[3]
     # elif p[2] == '%':
         # p[0] = p[1] % p[3]
-    
-def p_expression(p):
-    '''expression : INTEGER
-                  | FLOAT
-                  | STRING_LITERAL
-                  | ID
-                  | LPAREN expression RPAREN
-    '''
-    if p[1] == '(' and p[3] == ')':
-        p[0] = p[2]
-    else:
-        p[0] = p[1]
 
 def p_expression_list(p):
     '''expression_list : expression 
@@ -227,11 +227,20 @@ def p_declaration(p):
     '''declaration : const_decl
                    | type_decl
                    | var_decl
+                   | func_decl
+                   | import_decl
 
     '''
+
 def p_decl_exp(p):
     '''expression : declaration
     '''
+
+
+
+# def p_import_spec(p):
+#     '''import_spec : string_lit
+#     '''
 
 def p_const_decl(p):
     '''const_decl : CONST const_spec
@@ -271,46 +280,103 @@ def p_var_spec(p):
                 | identifier_list NORMAL_ASSIGNMENT expression_list 
     '''
 
+def p_func_decl(p):
+    '''func_decl : FUNC ID signature
+                 | FUNC ID signature block
+    '''
 
+def p_import_decl(p):
+    '''import_decl : IMPORT string_lit
+                   | IMPORT LPAREN string_lit RPAREN
+    '''
 
-# def p_block(p):
-#     '''block : LBRACE statement_list RBRACE
-#     '''
+def p_statement(p):
+    '''statement : if_statement
+                 | for_statement
+                 | assignment_statement
+                 | return_statement
+    '''
 
-# def p_statement_list(p):
-#     '''statement_list : statement
-#                       | statement statement_list
-#     '''
+def p_sta_exp(p):
+    '''expression : statement
+    '''
 
+def p_block(p):
+    '''block : LBRACE expression_list RBRACE
+    '''
 
-# def p_type_decl(p):
-#     '''type_decl : TYPE type_spec 
-#                  | TYPE LPAREN type_spec RPAREN
-#     '''
+def p_if_statement(p):
+    '''if_statement : IF expression block
+    '''
 
-# def p_type_spec(p):
-#     '''type_spec : alias_decl 
-#                 | type_decl
-#     '''
+def p_for_statement(p):
+    '''for_statement : FOR expression block
+                     | FOR for_clause block
+                     | FOR range_clause block
+    '''
 
-# def p_alias_decl(p):
-#     '''alias_decl : ID ASSIGMENT_OPERATOR 
-#     '''
+def p_for_clause(p):
+    '''for_clause : assignment_statement SEMICOLON expression SEMICOLON expression
+    '''
 
-# def p_statement(p):
-#     '''statement : if_statement'''
+def p_assignment_statement(p):
+    '''assignment_statement : expression_list NORMAL_ASSIGNMENT expression_list
+    '''
 
-# def p_if_statement(p):
-#     '''if_statement : IF expression LBRACE expression RBRACE
-#     '''
+def p_range_clause(p):
+    '''range_clause : expression_list NORMAL_ASSIGNMENT RANGE expression
+                    | identifier_list NORMAL_ASSIGNMENT RANGE expression
+    '''
+
+def p_return_statement(p):
+    '''return_statement : RETURN expression_list
+    '''
+
+def p_program(p):
+    '''program : expression_list
+    '''
+
 def p_error(p):
-    print("Syntax error")
+    print(f"Error in line {p.lineno}")
 
-parser = yacc.yacc()
-while True:
-    try:
-        s = input('calc > ')
-    except EOFError:
-        break
-    if not s: continue
-    result = parser.parse(s)
+parser = yacc.yacc(start="program")
+
+# while True:
+#     tok = parser.token()
+#     if not tok:
+#         break
+#     print(tok)
+
+# print(dir(parser))
+
+s = '''
+import "fmt"
+
+if 2 < 2 {
+    if x 2 < 2 {
+        3 + 3212
+    }
+    func teste (i int){
+        return x = i + 2
+    }
+    for i=2; 2<2; i++{
+        2 + 2 @#
+    }
+}
+'''
+
+import sys
+import io
+
+
+
+def get_errors(code):
+    old_stdout = sys.stdout
+    sys.stdout = buffer = io.StringIO()
+    r = parser.parse(code)
+
+
+    sys.stdout = old_stdout
+
+    whatWasPrinted = buffer.getvalue()
+    return whatWasPrinted.rstrip().split('\n')

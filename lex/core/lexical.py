@@ -1,4 +1,4 @@
-import ply.lex as lex
+import core.ply.lex as lex
 
 
 keywords = {

@@ -119,6 +119,7 @@ class PlyLogger(object):
 
     def error(self, msg, *args, **kwargs):
         self.f.write('ERROR: ' + (msg % args) + '\n')
+        # return 'ERROR: ' + (msg % args) + '\n'
 
     critical = debug
 
